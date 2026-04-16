@@ -1,0 +1,17 @@
+# deps
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# env — NEVER commit real secrets
+.env.local
+.env.production
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
