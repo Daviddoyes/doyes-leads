@@ -22,7 +22,7 @@ function getResend() {
 // ── Validation ────────────────────────────────────────────────────────────────
 
 const VALID_SECTORS = ['inmobiliario', 'servicios', 'retail', 'industria'] as const;
-const VALID_SIZES = ['1-5', '6-15', '16-50'] as const;
+const VALID_SIZES = ['1-5', '5-30', '30+'] as const;
 const VALID_TRIED = ['no', 'tools', 'consultant'] as const;
 const VALID_URGENCY = ['now', 'quarter', 'exploring'] as const;
 const VALID_BUDGET = ['yes', 'justify', 'no'] as const;

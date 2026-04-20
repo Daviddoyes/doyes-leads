@@ -4,8 +4,8 @@ export function calculateScore(data: LeadFormData): ScoreResult {
   let score = 0;
 
   // Company size
-  if (data.size === '16-50') score += 3;
-  else if (data.size === '6-15') score += 2;
+  if (data.size === '30+') score += 3;
+  else if (data.size === '5-30') score += 2;
   else if (data.size === '1-5') score += 1;
 
   // Urgency

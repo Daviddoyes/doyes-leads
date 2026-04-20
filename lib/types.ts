@@ -1,5 +1,5 @@
 export type Sector = 'inmobiliario' | 'servicios' | 'retail' | 'industria';
-export type Size = '1-5' | '6-15' | '16-50';
+export type Size = '1-5' | '5-30' | '30+';
 export type Tried = 'no' | 'tools' | 'consultant';
 export type Urgency = 'now' | 'quarter' | 'exploring';
 export type Budget = 'yes' | 'justify' | 'no';
