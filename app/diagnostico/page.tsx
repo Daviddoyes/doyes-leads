@@ -2,15 +2,7 @@
 
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import Link from 'next/link';
-import type { ApiResponse } from '@/lib/types';
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-type Sector = 'inmobiliario' | 'servicios' | 'retail' | 'industria';
-type Size = '1-5' | '6-15' | '16-50';
-type Tried = 'no' | 'tools' | 'consultant';
-type Urgency = 'now' | 'quarter' | 'exploring';
-type Budget = 'yes' | 'justify' | 'no';
+import type { ApiResponse, Sector, Size, Tried, Urgency, Budget } from '@/lib/types';
 
 interface FormState {
   sector: Sector | '';
