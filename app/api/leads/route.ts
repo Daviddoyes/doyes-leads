@@ -78,7 +78,7 @@ function buildEmailHtml(
   const tempEmoji = { hot: '🔥', warm: '☀️', cold: '❄️' }[qualification] ?? '';
   const tempLabel = { hot: 'HOT', warm: 'WARM', cold: 'COLD' }[qualification] ?? qualification.toUpperCase();
 
-  const sizeLabel = { '1-5': '1–5 personas', '6-15': '6–15 personas', '16-50': '16–50 personas' }[form.size];
+  const sizeLabel = { '1-5': '1–5 personas', '5-30': '5–30 personas', '30+': 'Más de 30 personas' }[form.size];
   const urgencyLabel = { now: 'Necesita solución ya', quarter: 'Este trimestre', exploring: 'Solo explorando' }[form.urgency];
   const budgetLabel = { yes: 'Sí, tiene partida', justify: 'Podría justificarse', no: 'No por ahora' }[form.budget];
   const triedLabel = { no: 'Todavía no', tools: 'Herramientas', consultant: 'Consultor/agencia' }[form.tried];
