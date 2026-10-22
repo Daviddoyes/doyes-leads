@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { forwardRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
+import { forwardRef, useState, type FormEvent, type RefObject } from 'react';
 
 import { getClasesBoton } from '@/components/Boton';
 import { OPCIONES_CUANDO, OPCIONES_PERSONAS } from '@/lib/test-ia360';
@@ -28,13 +28,13 @@ interface PasoContactoProps {
 }
 
 const CLASES_CAMPO =
-  'mt-1.5 block min-h-12 w-full rounded-xl border bg-superficie px-4 py-3 text-base text-tinta placeholder:text-tinta-tenue/70 ' +
-  'transition-colors duration-200 focus:border-marino focus:outline-none focus:ring-2 focus:ring-celeste/40';
+  'mt-2 block min-h-14 w-full rounded-boton border bg-superficie px-4 py-3 text-texto text-tinta ' +
+  'transition-colors duration-150 focus:border-marino focus:outline-none';
 
 function MensajeError({ id, texto }: { id: string; texto?: string }) {
   if (!texto) return null;
   return (
-    <p id={id} className="mt-1.5 text-xs font-medium text-peligro">
+    <p id={id} className="mt-2 text-detalle font-medium text-peligro">
       {texto}
     </p>
   );
@@ -57,7 +57,7 @@ function CampoTexto({ campo, etiqueta, opcional, type = 'text', autoComplete, in
   const idError = `error-${campo}`;
   return (
     <div>
-      <label htmlFor={`campo-${campo}`} className="text-sm font-medium text-marino">
+      <label htmlFor={`campo-${campo}`} className="text-detalle font-medium text-marino">
         {etiqueta}
         {opcional && <span className="font-normal text-tinta-tenue"> (opcional)</span>}
       </label>
@@ -95,27 +95,20 @@ function GrupoOpciones<T extends string>({ campo, etiqueta, opciones, valor, err
   const idError = `error-${campo}`;
   return (
     <fieldset id={`campo-${campo}`} tabIndex={-1} aria-describedby={error ? idError : undefined} className="outline-none">
-      <legend className="text-sm font-medium text-marino">{etiqueta}</legend>
-      <div className={`mt-1.5 grid gap-2 ${columnas}`}>
+      <legend className="text-detalle font-medium text-marino">{etiqueta}</legend>
+      <div className={`mt-2 grid gap-2 ${columnas}`}>
         {opciones.map((o) => {
           const elegida = valor === o.clave;
           return (
             <label
               key={o.clave}
-              className={`flex min-h-12 cursor-pointer items-center justify-center rounded-xl border px-3 py-2 text-center text-sm font-medium transition-all duration-200 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-celeste ${
+              className={`flex min-h-14 cursor-pointer items-center justify-center rounded-boton border px-3 py-2 text-center text-detalle font-medium transition-colors duration-150 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-celeste ${
                 elegida
                   ? 'border-marino bg-marino text-white'
                   : `bg-superficie text-tinta hover:border-marino ${error ? 'border-peligro' : 'border-borde-campo'}`
               }`}
             >
-              <input
-                type="radio"
-                name={campo}
-                value={o.clave}
-                checked={elegida}
-                onChange={() => onCambio(o.clave)}
-                className="sr-only"
-              />
+              <input type="radio" name={campo} value={o.clave} checked={elegida} onChange={() => onCambio(o.clave)} className="sr-only" />
               {o.texto}
             </label>
           );
@@ -123,6 +116,15 @@ function GrupoOpciones<T extends string>({ campo, etiqueta, opciones, valor, err
       </div>
       <MensajeError id={idError} texto={error} />
     </fieldset>
+  );
+}
+
+function Spinner() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 animate-spin" fill="none">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2.5" />
+      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -166,14 +168,13 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
   );
 
   return (
-    <form noValidate onSubmit={enviar} className="animate-aparecer">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-acento">Último paso</p>
-      <h1 ref={tituloRef} tabIndex={-1} className="mt-2 text-2xl font-semibold tracking-tight text-marino outline-none">
+    <form noValidate onSubmit={enviar} className="relative">
+      <h2 ref={tituloRef} tabIndex={-1} className="text-pregunta text-marino outline-none">
         ¿Dónde te enviamos tu resultado?
-      </h1>
-      <p className="mt-2 text-tinta-suave">Lo verás aquí mismo al momento y te llegará también por correo.</p>
+      </h2>
+      <p className="mt-3 max-w-lectura text-tinta-suave">Lo verás aquí mismo al momento y te llegará también por correo.</p>
 
-      <div className="mt-7 space-y-5">
+      <div className="mt-8 space-y-6">
         {texto('nombre', 'Nombre', 'name')}
         {texto('email', 'Email', 'email', { type: 'email', inputMode: 'email' })}
         {texto('empresa', 'Empresa', 'organization')}
@@ -208,7 +209,7 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
         </div>
 
         <div>
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl py-1 text-sm text-tinta-suave">
+          <label className="flex cursor-pointer items-start gap-3 py-1 text-detalle text-tinta-suave">
             <input
               id="campo-privacidad"
               type="checkbox"
@@ -223,7 +224,7 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
             />
             <span>
               He leído y acepto la{' '}
-              <Link href="/privacidad" target="_blank" className="font-medium text-acento underline underline-offset-2 hover:text-acento-hover">
+              <Link href="/privacidad" target="_blank" className="font-medium text-acento underline underline-offset-2">
                 política de privacidad
               </Link>
               . Usaremos tus datos para enviarte el resultado y, si quieres, hablar contigo sobre tu empresa.
@@ -234,12 +235,12 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
       </div>
 
       {errorGeneral && (
-        <p role="alert" className="mt-6 rounded-xl border border-peligro/30 bg-peligro-suave p-4 text-sm text-peligro">
+        <p role="alert" className="mt-8 border-l-[3px] border-peligro bg-peligro-suave px-4 py-3 text-detalle text-peligro">
           {errorGeneral}
         </p>
       )}
 
-      <button type="submit" disabled={enviando} className={`${getClasesBoton('principal', 'grande')} mt-7 w-full`}>
+      <button type="submit" disabled={enviando} className={`${getClasesBoton()} mt-8 w-full`}>
         {enviando ? (
           <>
             <Spinner />
@@ -252,12 +253,3 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
     </form>
   );
 });
-
-function Spinner(): ReactNode {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 animate-spin" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.3" strokeWidth="3" />
-      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  );
-}

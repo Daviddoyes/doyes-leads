@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { getClasesBoton } from '@/components/Boton';
 import {
+  NOMBRES_BLOQUE,
   PREGUNTA_ABIERTA,
   PREGUNTAS_TEST,
   TOTAL_PREGUNTAS,
@@ -22,12 +23,15 @@ import { CONTACTO_VACIO, validarAbierta, type DatosContacto, type ErroresContact
  */
 const PASO_ABIERTA = PREGUNTAS_TEST.length;
 const PASO_CONTACTO = PASO_ABIERTA + 1;
-const LETRAS = ['A', 'B', 'C', 'D'];
-/** Lo justo para ver la respuesta marcada antes de pasar a la siguiente. */
-const PAUSA_AL_RESPONDER = 260;
+/** Lo justo para ver la respuesta marcada antes de que salga la pregunta. */
+const PAUSA_AL_RESPONDER = 140;
+/** Lo que dura la salida (.saliendo en globals.css). */
+const SALIDA = 160;
 
 // Si el navegador recarga la pestaña (pasa a menudo al volver a Instagram), no se pierde lo respondido.
 const CLAVE_GUARDADO = 'ia360-test';
+
+type Direccion = 'adelante' | 'atras' | null;
 
 interface Guardado {
   paso: number;
@@ -66,6 +70,8 @@ function getPasoPermitido(paso: number, respuestas: (number | null)[], abierta: 
 
 export function TestIA360({ conFoto }: { conFoto: boolean }) {
   const [paso, setPaso] = useState(0);
+  const [direccion, setDireccion] = useState<Direccion>(null);
+  const [saliendo, setSaliendo] = useState(false);
   const [respuestas, setRespuestas] = useState<(number | null)[]>(() => PREGUNTAS_TEST.map(() => null));
   const [abierta, setAbierta] = useState('');
   const [errorAbierta, setErrorAbierta] = useState<string | null>(null);
@@ -75,12 +81,14 @@ export function TestIA360({ conFoto }: { conFoto: boolean }) {
   const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [resultado, setResultado] = useState<ResultadoTest | null>(null);
-  const [avanzando, setAvanzando] = useState(false);
 
   const tituloRef = useRef<HTMLHeadingElement>(null);
   const trampaRef = useRef<HTMLInputElement>(null);
   const pasosEnHistorial = useRef(0);
   const montado = useRef(false);
+  const ocupado = useRef(false);
+  const pasoRef = useRef(0);
+  pasoRef.current = paso;
   const resultadoRef = useRef<ResultadoTest | null>(null);
   resultadoRef.current = resultado;
 
@@ -100,10 +108,12 @@ export function TestIA360({ conFoto }: { conFoto: boolean }) {
     function alVolver(evento: PopStateEvent) {
       // Con el resultado ya en pantalla, volver no reabre el formulario.
       if (resultadoRef.current) return;
-      const destino = evento.state?.pasoTest;
+      const destino = typeof evento.state?.pasoTest === 'number' ? evento.state.pasoTest : 0;
       pasosEnHistorial.current = Math.max(pasosEnHistorial.current - 1, 0);
-      setPaso(typeof destino === 'number' ? destino : 0);
-      setAvanzando(false);
+      ocupado.current = false;
+      setSaliendo(false);
+      setDireccion(destino < pasoRef.current ? 'atras' : 'adelante');
+      setPaso(destino);
     }
     window.addEventListener('popstate', alVolver);
     return () => window.removeEventListener('popstate', alVolver);
@@ -127,6 +137,8 @@ export function TestIA360({ conFoto }: { conFoto: boolean }) {
   const irA = useCallback((destino: number) => {
     window.history.pushState({ ...window.history.state, pasoTest: destino }, '');
     pasosEnHistorial.current += 1;
+    setDireccion('adelante');
+    setSaliendo(false);
     setPaso(destino);
   }, []);
 
@@ -138,17 +150,20 @@ export function TestIA360({ conFoto }: { conFoto: boolean }) {
     // Se ha llegado a este paso recargando: no hay historial propio al que volver.
     const destino = Math.max(paso - 1, 0);
     window.history.replaceState({ ...window.history.state, pasoTest: destino }, '');
+    setDireccion('atras');
     setPaso(destino);
   }
 
   function responder(indicePregunta: number, valor: number) {
-    if (avanzando) return;
+    if (ocupado.current) return;
+    ocupado.current = true;
     setRespuestas((anteriores) => anteriores.map((r, i) => (i === indicePregunta ? valor : r)));
-    setAvanzando(true);
+    // La respuesta se marca, la pregunta sale y entra la siguiente.
+    window.setTimeout(() => setSaliendo(true), PAUSA_AL_RESPONDER);
     window.setTimeout(() => {
-      setAvanzando(false);
+      ocupado.current = false;
       irA(indicePregunta + 1);
-    }, PAUSA_AL_RESPONDER);
+    }, PAUSA_AL_RESPONDER + SALIDA);
   }
 
   function continuarAbierta() {
@@ -197,145 +212,141 @@ export function TestIA360({ conFoto }: { conFoto: boolean }) {
     }
   }
 
-  if (resultado) {
-    return (
-      <div className="mx-auto w-full max-w-xl px-4 py-8 sm:py-14">
-        <Resultado ref={tituloRef} resultado={resultado} conFoto={conFoto} />
-      </div>
-    );
-  }
-
   const numero = Math.min(paso + 1, TOTAL_PREGUNTAS);
-  const progreso = paso === PASO_CONTACTO ? 100 : Math.round((paso / TOTAL_PREGUNTAS) * 100);
+  const progreso = resultado || paso === PASO_CONTACTO ? 100 : Math.round((paso / TOTAL_PREGUNTAS) * 100);
   const pregunta = PREGUNTAS_TEST[paso];
+  const claseEntrada = saliendo ? 'saliendo' : direccion === 'atras' ? 'entrar-atras' : direccion === 'adelante' ? 'entrar-adelante' : '';
 
   return (
-    <div className="mx-auto w-full max-w-xl px-4 pb-12 pt-4 sm:pt-10">
-      {/* Progreso y "atrás" */}
-      <div className="sticky top-16 z-10 -mx-4 bg-fondo/95 px-4 pb-4 pt-3 backdrop-blur-sm sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:backdrop-blur-none">
-        <div className="flex min-h-11 items-center justify-between gap-3">
-          {paso > 0 ? (
-            <button
-              type="button"
-              onClick={volver}
-              className="-ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-medium text-tinta-suave transition-colors duration-200 hover:text-marino"
-            >
-              <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5" fill="none">
-                <path d="M16 10H5m0 0 4.5-4.5M5 10l4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Atrás
-            </button>
-          ) : (
-            <span className="text-sm text-tinta-tenue">Unos 3 minutos</span>
-          )}
-          <span className="text-sm text-tinta-tenue" aria-live="polite">
-            {paso === PASO_CONTACTO ? 'Tus datos' : `Pregunta ${numero} de ${TOTAL_PREGUNTAS}`}
-          </span>
-        </div>
-        <div
-          role="progressbar"
-          aria-label="Progreso del test"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={progreso}
-          className="mt-2 h-1.5 overflow-hidden rounded-full bg-borde"
-        >
-          <div className="h-full rounded-full bg-celeste transition-[width] duration-300 ease-out" style={{ width: `${Math.max(progreso, 3)}%` }} />
-        </div>
+    <div className="mx-auto w-full max-w-[40rem] px-5 pb-16 pt-2 sm:pt-8">
+      <div className="flex items-baseline justify-between gap-4">
+        <h1 className="text-subtitulo text-marino">Test IA360</h1>
+        {!resultado && (
+          <p className="text-detalle tabular-nums text-tinta-tenue" aria-live="polite">
+            {paso === PASO_CONTACTO ? 'Tus datos' : `${numero} / ${TOTAL_PREGUNTAS}`}
+          </p>
+        )}
+      </div>
+      <div
+        role="progressbar"
+        aria-label="Progreso del test"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progreso}
+        className="mt-3 h-[2px] bg-linea"
+      >
+        <div className="h-full bg-celeste transition-[width] duration-300 ease-out" style={{ width: `${progreso}%` }} />
       </div>
 
-      <div className="mt-4 sm:mt-8">
-        {pregunta && (
-          <fieldset key={pregunta.id} className="animate-aparecer">
-            <legend className="sr-only">Pregunta {pregunta.numero}</legend>
-            <h1 ref={tituloRef} tabIndex={-1} className="text-xl font-semibold tracking-tight text-marino outline-none sm:text-2xl">
-              {pregunta.texto}
-            </h1>
-            <ul className="mt-7 space-y-3">
-              {pregunta.respuestas.map((texto, valor) => {
-                const elegida = respuestas[paso] === valor;
-                return (
-                  <li key={texto}>
-                    <button
-                      type="button"
-                      onClick={() => responder(paso, valor)}
-                      aria-pressed={elegida}
-                      className={`flex min-h-[3.75rem] w-full items-center gap-4 rounded-2xl border px-4 py-3 text-left text-base transition-all duration-200 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-celeste ${
-                        elegida
-                          ? 'border-marino bg-marino text-white'
-                          : 'border-borde-campo/50 bg-superficie text-tinta hover:border-marino'
-                      }`}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                          elegida ? 'bg-celeste text-marino' : 'bg-fondo text-tinta-suave'
-                        }`}
-                      >
-                        {LETRAS[valor]}
-                      </span>
-                      {texto}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </fieldset>
-        )}
-
-        {paso === PASO_ABIERTA && (
-          <div className="animate-aparecer">
-            <h1 ref={tituloRef} tabIndex={-1} className="text-xl font-semibold tracking-tight text-marino outline-none sm:text-2xl">
-              <label htmlFor="respuesta-abierta">{PREGUNTA_ABIERTA.texto}</label>
-            </h1>
-            <p className="mt-2 text-tinta-suave">Con dos o tres líneas basta. Es lo que más nos ayuda a entender tu caso.</p>
-            <textarea
-              id="respuesta-abierta"
-              rows={5}
-              value={abierta}
-              maxLength={PREGUNTA_ABIERTA.maximo}
-              onChange={(e) => {
-                setAbierta(e.target.value);
-                if (errorAbierta) setErrorAbierta(validarAbierta(e.target.value) ?? null);
-              }}
-              onBlur={() => abierta && setErrorAbierta(validarAbierta(abierta) ?? null)}
-              placeholder={PREGUNTA_ABIERTA.ejemplo}
-              aria-invalid={Boolean(errorAbierta)}
-              aria-describedby={errorAbierta ? 'error-abierta' : undefined}
-              aria-required
-              className={`mt-6 block w-full resize-y rounded-2xl border bg-superficie px-4 py-3 text-base text-tinta placeholder:text-tinta-tenue/70 focus:border-marino focus:outline-none focus:ring-2 focus:ring-celeste/40 ${
-                errorAbierta ? 'border-peligro' : 'border-borde-campo'
-              }`}
-            />
-            {errorAbierta && (
-              <p id="error-abierta" className="mt-1.5 text-xs font-medium text-peligro">
-                {errorAbierta}
-              </p>
+      {resultado ? (
+        <Resultado ref={tituloRef} resultado={resultado} conFoto={conFoto} />
+      ) : (
+        <>
+          <div className="mt-4 flex min-h-11 items-center">
+            {paso > 0 ? (
+              <button
+                type="button"
+                onClick={volver}
+                className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-detalle font-medium text-tinta-suave transition-colors duration-150 hover:text-marino"
+              >
+                <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4" fill="none">
+                  <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Atrás
+              </button>
+            ) : (
+              <p className="text-detalle text-tinta-tenue">Unos 3 minutos. Al final verás tu resultado.</p>
             )}
-            <button type="button" onClick={continuarAbierta} className={`${getClasesBoton('principal', 'grande')} mt-6 w-full`}>
-              Continuar
-            </button>
           </div>
-        )}
 
-        {paso === PASO_CONTACTO && (
-          <PasoContacto
-            ref={tituloRef}
-            datos={contacto}
-            onCambio={(datos) => {
-              setContacto(datos);
-              setErroresServidor({});
-            }}
-            privacidad={privacidad}
-            onPrivacidad={setPrivacidad}
-            erroresServidor={erroresServidor}
-            errorGeneral={errorGeneral}
-            enviando={enviando}
-            onEnviar={enviar}
-            trampaRef={trampaRef}
-          />
-        )}
-      </div>
+          <div key={paso} className={`mt-6 sm:mt-10 ${claseEntrada}`}>
+            {pregunta && (
+              <fieldset>
+                <legend className="sr-only">Pregunta {pregunta.numero}</legend>
+                <p className="text-detalle text-tinta-tenue">{NOMBRES_BLOQUE[pregunta.bloque]}</p>
+                <h2 ref={tituloRef} tabIndex={-1} className="mt-2 text-pregunta text-marino outline-none">
+                  {pregunta.texto}
+                </h2>
+                <ul className="mt-8 space-y-3">
+                  {pregunta.respuestas.map((texto, valor) => {
+                    const elegida = respuestas[paso] === valor;
+                    return (
+                      <li key={texto}>
+                        <button
+                          type="button"
+                          onClick={() => responder(paso, valor)}
+                          aria-pressed={elegida}
+                          className={`flex min-h-16 w-full items-center rounded-boton border px-5 py-3 text-left text-texto transition-colors duration-150 ${
+                            elegida
+                              ? 'border-marino bg-marino text-white'
+                              : 'border-gris-azulado bg-superficie text-tinta hover:border-marino'
+                          }`}
+                        >
+                          {texto}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </fieldset>
+            )}
+
+            {paso === PASO_ABIERTA && (
+              <div>
+                <p className="text-detalle text-tinta-tenue">Para terminar</p>
+                <h2 ref={tituloRef} tabIndex={-1} className="mt-2 text-pregunta text-marino outline-none">
+                  <label htmlFor="respuesta-abierta">{PREGUNTA_ABIERTA.texto}</label>
+                </h2>
+                <p className="mt-3 text-tinta-suave">Con dos o tres líneas basta.</p>
+                <textarea
+                  id="respuesta-abierta"
+                  rows={5}
+                  value={abierta}
+                  maxLength={PREGUNTA_ABIERTA.maximo}
+                  onChange={(e) => {
+                    setAbierta(e.target.value);
+                    if (errorAbierta) setErrorAbierta(validarAbierta(e.target.value) ?? null);
+                  }}
+                  onBlur={() => abierta && setErrorAbierta(validarAbierta(abierta) ?? null)}
+                  placeholder={PREGUNTA_ABIERTA.ejemplo}
+                  aria-invalid={Boolean(errorAbierta)}
+                  aria-describedby={errorAbierta ? 'error-abierta' : undefined}
+                  aria-required
+                  className={`mt-6 block w-full resize-y rounded-boton border bg-superficie px-4 py-3 text-texto text-tinta placeholder:text-tinta-tenue/80 focus:border-marino focus:outline-none ${
+                    errorAbierta ? 'border-peligro' : 'border-borde-campo'
+                  }`}
+                />
+                {errorAbierta && (
+                  <p id="error-abierta" className="mt-2 text-detalle font-medium text-peligro">
+                    {errorAbierta}
+                  </p>
+                )}
+                <button type="button" onClick={continuarAbierta} className={`${getClasesBoton()} mt-8 w-full`}>
+                  Continuar
+                </button>
+              </div>
+            )}
+
+            {paso === PASO_CONTACTO && (
+              <PasoContacto
+                ref={tituloRef}
+                datos={contacto}
+                onCambio={(datos) => {
+                  setContacto(datos);
+                  setErroresServidor({});
+                }}
+                privacidad={privacidad}
+                onPrivacidad={setPrivacidad}
+                erroresServidor={erroresServidor}
+                errorGeneral={errorGeneral}
+                enviando={enviando}
+                onEnviar={enviar}
+                trampaRef={trampaRef}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

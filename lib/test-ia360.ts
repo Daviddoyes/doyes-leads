@@ -18,6 +18,13 @@ export interface PreguntaTest {
   respuestas: [string, string, string, string];
 }
 
+export const NOMBRES_BLOQUE: Record<ClaveBloque, string> = {
+  A: 'Dependencia de personas',
+  B: 'Tiempo y datos',
+  C: 'Clientes y control',
+  D: 'Herramientas e IA',
+};
+
 export const URL_API_TEST =
   process.env.NEXT_PUBLIC_TEST_IA360_URL || 'https://portal.doyesdigital.com/api/test-ia360';
 

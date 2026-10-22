@@ -13,13 +13,11 @@ interface PaginaLegalProps {
 export function PaginaLegal({ titulo, actualizado, children }: PaginaLegalProps) {
   return (
     <>
-      <Cabecera conNavegacion />
-      <main className="flex-1 px-4 py-12 sm:px-6 sm:py-16">
-        <article
-          className="mx-auto max-w-2xl text-tinta-suave [&_a]:font-medium [&_a]:text-acento [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-acento-hover [&_h2]:mb-3 [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-marino [&_li]:mt-1.5 [&_p]:mt-3 [&_strong]:font-semibold [&_strong]:text-marino [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
-        >
-          <h1 className="text-3xl font-semibold tracking-tight text-marino">{titulo}</h1>
-          <p className="!mt-2 text-xs text-tinta-tenue">Última actualización: {actualizado}</p>
+      <Cabecera conEnlaceTest />
+      <main className="flex-1 px-5 pb-20 pt-8 sm:px-8 lg:px-16 lg:pt-16">
+        <article className="mx-auto max-w-[62ch] text-tinta-suave [&_a]:font-medium [&_a]:text-acento [&_a]:underline [&_a]:underline-offset-2 [&_h2]:mb-3 [&_h2]:mt-12 [&_h2]:text-subtitulo [&_h2]:text-marino [&_li]:mt-2 [&_p]:mt-4 [&_strong]:font-medium [&_strong]:text-marino [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5">
+          <h1 className="text-titulo text-marino">{titulo}</h1>
+          <p className="!mt-3 text-detalle text-tinta-tenue">Última actualización: {actualizado}</p>
           {children}
         </article>
       </main>
@@ -28,13 +26,13 @@ export function PaginaLegal({ titulo, actualizado, children }: PaginaLegalProps)
   );
 }
 
-/** Tabla de dos columnas que en el móvil se lee como una lista. */
+/** Datos en dos columnas que en el móvil se leen como una lista. */
 export function TablaLegal({ filas }: { filas: [string, ReactNode][] }) {
   return (
-    <dl className="mt-4 divide-y divide-borde rounded-2xl border border-borde bg-superficie">
+    <dl className="mt-5 border-t border-linea">
       {filas.map(([dato, valor]) => (
-        <div key={dato} className="grid gap-1 px-4 py-3 sm:grid-cols-[11rem_1fr] sm:gap-4">
-          <dt className="text-xs font-semibold uppercase tracking-wider text-tinta-tenue sm:pt-0.5">{dato}</dt>
+        <div key={dato} className="grid gap-1 border-b border-linea py-3 sm:grid-cols-[9rem_1fr] sm:gap-4">
+          <dt className="text-detalle text-tinta-tenue">{dato}</dt>
           <dd className="text-tinta">{valor}</dd>
         </div>
       ))}

@@ -1,30 +1,44 @@
-import { forwardRef } from 'react';
+'use client';
 
-import { EnlaceBoton, Flecha } from '@/components/Boton';
+import { forwardRef, useEffect, useState } from 'react';
+
+import { EnlaceBoton } from '@/components/Boton';
 import { HablasConDavid } from '@/components/HablasConDavid';
 import { URL_RESERVA } from '@/lib/marca';
 import { TEXTO_RESERVA, type ColorTest, type ResultadoTest } from '@/lib/test-ia360';
 
-const COLORES: Record<ColorTest, { fondo: string; suave: string; texto: string; borde: string }> = {
-  verde: { fondo: 'bg-exito', suave: 'bg-exito-suave', texto: 'text-exito', borde: 'border-exito/30' },
-  ambar: { fondo: 'bg-aviso', suave: 'bg-aviso-suave', texto: 'text-aviso', borde: 'border-aviso/30' },
-  rojo: { fondo: 'bg-peligro', suave: 'bg-peligro-suave', texto: 'text-peligro', borde: 'border-peligro/30' },
+const COLORES: Record<ColorTest, { fondo: string; texto: string }> = {
+  verde: { fondo: 'bg-exito', texto: 'text-exito' },
+  ambar: { fondo: 'bg-aviso', texto: 'text-aviso' },
+  rojo: { fondo: 'bg-peligro', texto: 'text-peligro' },
 };
-
 const NOMBRES: Record<ColorTest, string> = { verde: 'Verde', ambar: 'Ámbar', rojo: 'Rojo' };
 const ORDEN_SEMAFORO: ColorTest[] = ['verde', 'ambar', 'rojo'];
+const DURACION_CUENTA = 600;
 
-function Semaforo({ color }: { color: ColorTest }) {
-  return (
-    <div aria-hidden="true" className="flex gap-2 rounded-full bg-marino p-2">
-      {ORDEN_SEMAFORO.map((c) => (
-        <span
-          key={c}
-          className={`h-5 w-5 rounded-full transition-opacity ${COLORES[c].fondo} ${c === color ? 'opacity-100 ring-2 ring-white/70' : 'opacity-25'}`}
-        />
-      ))}
-    </div>
-  );
+/** Al aparecer el resultado, la cifra cuenta hasta su valor y las barras se llenan. Una vez. */
+function useAparicion(objetivo: number) {
+  const [valor, setValor] = useState(0);
+  const [lleno, setLleno] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setValor(objetivo);
+      setLleno(true);
+      return;
+    }
+    const inicio = performance.now();
+    let fotograma = requestAnimationFrame(function paso(ahora) {
+      const t = Math.min((ahora - inicio) / DURACION_CUENTA, 1);
+      setValor(Math.round(objetivo * (1 - (1 - t) ** 3)));
+      if (t < 1) fotograma = requestAnimationFrame(paso);
+    });
+    const temporizador = window.setTimeout(() => setLleno(true), 80);
+    return () => {
+      cancelAnimationFrame(fotograma);
+      window.clearTimeout(temporizador);
+    };
+  }, [objetivo]);
+  return { valor, lleno };
 }
 
 interface ResultadoProps {
@@ -33,49 +47,59 @@ interface ResultadoProps {
 }
 
 export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function Resultado({ resultado, conFoto }, ref) {
+  const { valor, lleno } = useAparicion(resultado.puntos);
   const colores = COLORES[resultado.color];
   // La agenda de la web manda; si no está configurada, la que indique el portal.
   const urlReserva = URL_RESERVA ?? resultado.llamada.url;
 
   return (
-    <div className="animate-aparecer space-y-6">
-      <section aria-labelledby="resultado-titulo" className={`rounded-3xl border bg-superficie p-6 sm:p-8 ${colores.borde}`}>
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-acento">Tu resultado</p>
-          <Semaforo color={resultado.color} />
+    <div className="entrar mt-10 sm:mt-14">
+      <section aria-labelledby="resultado-titulo">
+        <p className="text-detalle text-tinta-tenue">Tu resultado</p>
+        <div className="mt-3 flex items-end justify-between gap-6">
+          <p className="flex items-baseline gap-3">
+            <span className="font-titulos text-display font-semibold tabular-nums text-marino" aria-hidden="true">
+              {valor}
+            </span>
+            <span className="sr-only">{resultado.puntos}</span>
+            <span className="text-tinta-tenue">de {resultado.maximo} puntos</span>
+          </p>
+          {/* Semáforo: tres tramos, el que toca encendido. */}
+          <div aria-hidden="true" className="mb-3 flex gap-1">
+            {ORDEN_SEMAFORO.map((c) => (
+              <span key={c} className={`h-1.5 w-7 rounded-full ${c === resultado.color ? COLORES[c].fondo : 'bg-linea'}`} />
+            ))}
+          </div>
         </div>
-        <p className="mt-6 flex items-baseline gap-2">
-          <span className="font-titulos text-4xl font-semibold text-marino">{resultado.puntos}</span>
-          <span className="text-tinta-tenue">de {resultado.maximo} puntos</span>
-        </p>
-        <p className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${colores.suave} ${colores.texto}`}>
-          {resultado.nombreColor}
-        </p>
-        <h1 ref={ref} id="resultado-titulo" tabIndex={-1} className="mt-4 text-2xl font-semibold tracking-tight text-marino outline-none">
+        <p className={`mt-4 text-detalle font-medium ${colores.texto}`}>{resultado.nombreColor}</p>
+        <h2 ref={ref} id="resultado-titulo" tabIndex={-1} className="mt-1 text-titulo text-marino outline-none">
           {resultado.titular}
-        </h1>
-        <p className="mt-3 text-base text-tinta-suave">{resultado.mensaje}</p>
-        <p className="mt-4 text-xs text-tinta-tenue">Cuantos más puntos, más tiempo hay por recuperar.</p>
+        </h2>
+        <p className="mt-4 max-w-lectura text-tinta-suave">{resultado.mensaje}</p>
       </section>
 
-      <section aria-labelledby="bloques-titulo" className="rounded-3xl border border-borde bg-superficie p-6 sm:p-8">
-        <h2 id="bloques-titulo" className="text-lg font-semibold text-marino">
+      <section aria-labelledby="bloques-titulo" className="mt-12 border-t border-linea pt-10">
+        <h2 id="bloques-titulo" className="text-subtitulo text-marino">
           Tu empresa, por bloques
         </h2>
-        <ul className="mt-5 space-y-5">
-          {resultado.bloques.map((b) => {
+        <p className="mt-1 text-detalle text-tinta-tenue">Cuantos más puntos, más tiempo hay por recuperar.</p>
+        <ul className="mt-6 space-y-6">
+          {resultado.bloques.map((b, i) => {
             const c = COLORES[b.color];
-            const porcentaje = b.maximo > 0 ? Math.round((b.puntos / b.maximo) * 100) : 0;
+            const porcentaje = b.maximo > 0 ? (b.puntos / b.maximo) * 100 : 0;
             return (
               <li key={b.clave}>
-                <div className="flex items-baseline justify-between gap-3 text-sm">
+                <div className="flex items-baseline justify-between gap-4 text-detalle">
                   <span className="font-medium text-marino">{b.nombre}</span>
-                  <span className={`shrink-0 text-xs font-semibold ${c.texto}`}>
-                    {NOMBRES[b.color]} · {b.puntos}/{b.maximo}
+                  <span className={`shrink-0 tabular-nums ${c.texto}`}>
+                    {NOMBRES[b.color]}, {b.puntos} de {b.maximo}
                   </span>
                 </div>
-                <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-fondo" aria-hidden="true">
-                  <div className={`h-full rounded-full ${c.fondo}`} style={{ width: `${Math.max(porcentaje, 4)}%` }} />
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-linea" aria-hidden="true">
+                  <div
+                    className={`h-full rounded-full ${c.fondo} transition-[width] duration-700 ease-out`}
+                    style={{ width: lleno ? `${Math.max(porcentaje, 3)}%` : '0%', transitionDelay: `${i * 70}ms` }}
+                  />
                 </div>
               </li>
             );
@@ -84,60 +108,56 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
       </section>
 
       {resultado.destacados.length > 0 && (
-        <section aria-labelledby="destacados-titulo" className="space-y-3">
-          <h2 id="destacados-titulo" className="px-1 text-lg font-semibold text-marino">
+        <section aria-labelledby="destacados-titulo" className="mt-12 border-t border-linea pt-10">
+          <h2 id="destacados-titulo" className="text-subtitulo text-marino">
             Dónde mirar primero
           </h2>
-          {resultado.destacados.map((d) => {
-            const c = COLORES[d.color];
-            return (
-              <article key={d.clave} className="relative overflow-hidden rounded-2xl border border-borde bg-superficie p-5 pl-6 sm:p-6 sm:pl-7">
-                <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1.5 ${c.fondo}`} />
-                <h3 className={`text-sm font-semibold ${c.texto}`}>{d.nombre}</h3>
-                <p className="mt-1.5 text-base text-tinta">{d.frase}</p>
+          <div className="mt-6 space-y-6">
+            {resultado.destacados.map((d) => (
+              <article key={d.clave}>
+                <h3 className="text-detalle font-medium text-marino">{d.nombre}</h3>
+                <p className="mt-1 max-w-lectura text-tinta">{d.frase}</p>
               </article>
-            );
-          })}
+            ))}
+          </div>
         </section>
       )}
 
-      <section aria-label="Siguiente paso" className="rounded-3xl bg-marino p-6 text-white sm:p-8">
+      <section aria-labelledby="siguiente-titulo" className="mt-12 border-t border-linea pt-10">
         {resultado.llamada.mostrar ? (
           <>
-            <h2 className="text-xl font-semibold text-white">El siguiente paso</h2>
-            <p className="mt-2 text-white/80">
+            <h2 id="siguiente-titulo" className="text-subtitulo text-marino">
+              El siguiente paso
+            </h2>
+            <p className="mt-2 max-w-lectura text-tinta-suave">
               En 30 minutos vemos tu resultado juntos y te digo por dónde empezaría. Además, te hemos enviado el resultado
               por correo.
             </p>
             {urlReserva ? (
-              <EnlaceBoton href={urlReserva} tamano="grande" className="mt-6 w-full !bg-celeste !text-marino hover:!bg-white">
+              <EnlaceBoton href={urlReserva} className="mt-8 w-full">
                 {TEXTO_RESERVA}
-                <Flecha />
               </EnlaceBoton>
             ) : (
-              <p className="mt-6 rounded-2xl bg-white/10 p-4 font-medium">{resultado.llamada.texto}</p>
+              <p className="mt-6 font-medium text-marino">{resultado.llamada.texto}</p>
             )}
-            <div className="mt-6 border-t border-white/15 pt-6">
-              <HablasConDavid conFoto={conFoto} invertido />
+            <div className="mt-8">
+              <HablasConDavid conFoto={conFoto} />
             </div>
           </>
         ) : (
-          <div className="flex items-start gap-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10" aria-hidden="true">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 6h16v12H4zM4 7l8 6 8-6" />
-              </svg>
-            </span>
-            <div>
-              <h2 className="text-lg font-semibold text-white">{resultado.llamada.texto}</h2>
-              <p className="mt-1 text-white/80">Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.</p>
-            </div>
-          </div>
+          <>
+            <h2 id="siguiente-titulo" className="text-subtitulo text-marino">
+              {resultado.llamada.texto}
+            </h2>
+            <p className="mt-2 max-w-lectura text-tinta-suave">
+              Si no lo ves en unos minutos, revisa la carpeta de spam o de promociones.
+            </p>
+          </>
         )}
       </section>
 
-      <p className="text-center">
-        <EnlaceBoton href="/" variante="secundario">
+      <p className="mt-12 border-t border-linea pt-6">
+        <EnlaceBoton href="/" variante="texto">
           Volver a la portada
         </EnlaceBoton>
       </p>
