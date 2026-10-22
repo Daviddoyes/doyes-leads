@@ -21,6 +21,7 @@ const config: Config = {
       pregunta: ['var(--tam-pregunta)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
       titulo: ['var(--tam-titulo)', { lineHeight: '1.12', letterSpacing: '-0.02em' }],
       display: ['var(--tam-display)', { lineHeight: '1.02', letterSpacing: '-0.03em' }],
+      portada: ['var(--tam-portada)', { lineHeight: '0.94', letterSpacing: '-0.045em' }],
     },
     extend: {
       colors: {

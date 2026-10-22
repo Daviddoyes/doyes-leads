@@ -20,7 +20,7 @@ export const DATOS_EMPRESA = {
 
 /**
  * La agenda de citas de Google Calendar de David. Si aún no está configurada,
- * los botones de "Hablar con David" abren un correo.
+ * el botón "Contacto" abre un correo a hola@doyesdigital.com.
  */
 export const URL_RESERVA = process.env.NEXT_PUBLIC_RESERVA_LLAMADA_URL || null;
 export const URL_CONTACTO = URL_RESERVA ?? `mailto:${DATOS_EMPRESA.email}`;

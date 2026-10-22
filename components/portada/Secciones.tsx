@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react';
 
 import { EnlaceBoton } from '@/components/Boton';
-import { HablasConDavid } from '@/components/HablasConDavid';
 
-import { DOLORES, ENTREGABLES, FASES, PASOS, PREGUNTAS_FRECUENTES } from './contenido';
+import { DOLORES, ENTREGABLES, FASES, PASOS, PREGUNTAS_FRECUENTES, TITULO_GANAS } from './contenido';
 
 // Las secciones de la portada, compartidas por / y sus versiones de prueba.
 
@@ -55,14 +54,21 @@ export function SeccionTeSuena() {
   );
 }
 
-export function SeccionGanas() {
+interface SeccionGanasProps {
+  titulo?: string;
+  /** Una frase entre el título y el texto (en la v1, el antiguo título de la sección). */
+  entradilla?: string;
+}
+
+export function SeccionGanas({ titulo = TITULO_GANAS, entradilla }: SeccionGanasProps) {
   return (
     <section aria-labelledby="ganas-titulo" className={MARGENES}>
       <div className={`${CONTENEDOR} border-t border-linea py-20 lg:py-28`}>
         <h2 id="ganas-titulo" className="max-w-[24ch] text-titulo text-marino">
-          Más tiempo. Más margen. Una empresa que no depende de una sola persona.
+          {titulo}
         </h2>
-        <p className="mt-6 max-w-lectura text-tinta-suave lg:mt-8">
+        {entradilla && <p className="mt-6 max-w-[40ch] font-titulos text-subtitulo text-marino lg:mt-8">{entradilla}</p>}
+        <p className={`max-w-lectura text-tinta-suave ${entradilla ? 'mt-4' : 'mt-6 lg:mt-8'}`}>
           La tecnología tiene sentido cuando te devuelve horas, te ayuda a crecer o te deja vivir mejor. Si no, solo es
           otra herramienta más.
         </p>
@@ -184,22 +190,17 @@ export function SeccionPreguntas() {
   );
 }
 
-export function SeccionFinal({ conFoto }: { conFoto: boolean }) {
+export function SeccionFinal() {
   return (
     <section aria-labelledby="final-titulo" className={MARGENES}>
-      <div className={`${CONTENEDOR} grid gap-12 border-t border-linea py-20 lg:grid-cols-12 lg:items-end lg:gap-8 lg:py-32`}>
-        <div className="lg:col-span-7">
-          <h2 id="final-titulo" className="max-w-[16ch] text-titulo text-marino">
-            ¿Cuánto tiempo está perdiendo tu empresa?
-          </h2>
-          <p className="mt-4 text-tinta-suave">Descúbrelo en 3 minutos.</p>
-          <EnlaceBoton href="/test" className="mt-8 w-full sm:w-auto">
-            Empezar el test
-          </EnlaceBoton>
-        </div>
-        <div className="lg:col-span-5">
-          <HablasConDavid conFoto={conFoto} />
-        </div>
+      <div className={`${CONTENEDOR} border-t border-linea py-20 lg:py-32`}>
+        <h2 id="final-titulo" className="max-w-[16ch] text-titulo text-marino">
+          ¿Cuánto tiempo está perdiendo tu empresa?
+        </h2>
+        <p className="mt-4 text-tinta-suave">Descúbrelo en 3 minutos.</p>
+        <EnlaceBoton href="/test" className="mt-8 w-full sm:w-auto">
+          Empezar el test
+        </EnlaceBoton>
       </div>
     </section>
   );

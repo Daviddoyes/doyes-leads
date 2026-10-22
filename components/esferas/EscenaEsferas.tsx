@@ -2,17 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { ESTACIONES, getGeometria, type Geometria } from './geometria';
+import { DEPARTAMENTOS, getGeometria, POR_FILA, type Geometria } from './geometria';
 import type { Escena } from './motor';
 
 /*
  * Esferas desordenadas que reaccionan al ratón o al dedo y, al hacer scroll
- * (o a los pocos segundos en el móvil), se ordenan en un flujo de cinco pasos
- * por el que circulan despacio, en bucle.
+ * (o a los pocos segundos en el móvil), se ordenan en seis departamentos
+ * conectados por un circuito por el que circulan despacio, en bucle.
  *
  * El texto de la portada no espera a esto: el motor (motor.ts) se descarga
  * cuando el navegador queda libre. Con "reducir movimiento", o sin WebGL2,
- * se ve una imagen fija del flujo ya ordenado.
+ * se ve una imagen fija de la escena ya ordenada.
  */
 
 type Modo = 'esperando' | 'viva' | 'fija';
@@ -46,7 +46,7 @@ function tieneWebGL2(): boolean {
   }
 }
 
-/** El flujo ordenado, dibujado sin WebGL: para "reducir movimiento" o navegadores sin WebGL2. */
+/** La escena ordenada, dibujada sin WebGL: para "reducir movimiento" o navegadores sin WebGL2. */
 function FlujoFijo({ geo }: { geo: Geometria }) {
   const piezas = Array.from({ length: 12 }, (_, i) => geo.puntoPista(i / 12 + 0.02));
   const puntos = [
@@ -176,36 +176,45 @@ export function EscenaEsferas() {
     window.setTimeout(() => escena.ordenar(), PAUSA_VER_DE_NUEVO);
   }
 
+  // Los de delante llevan el nombre debajo; los de detrás, encima. Así las dos
+  // filas no se montan, y ningún nombre se sale por los lados del móvil.
   const etiquetas = geo
     ? geo.estaciones.map((p, i) => {
         const s = geo.proyectar(p);
-        // Arriba, el nombre va por encima de las piezas que vuelven por detrás.
-        const fondo = geo.proyectar(geo.estacionesFondo[i]);
-        return { x: s.x, y: s.y, radio: geo.radioEstacion * s.escala, techo: fondo.y - geo.radioPieza * fondo.escala };
+        const detras = i >= POR_FILA;
+        const radio = geo.radioEstacion * s.escala;
+        const mitadTexto = DEPARTAMENTOS[i].length * 4.3 + 4;
+        return {
+          x: Math.min(Math.max(s.x, mitadTexto), geo.ancho - mitadTexto),
+          y: detras ? s.y - radio - 8 : s.y + radio + 8,
+          detras,
+        };
       })
     : [];
-  // Si los pasos quedan muy juntos (móvil), los nombres se alternan arriba y abajo.
-  const alternar = etiquetas.length > 1 && etiquetas[1].x - etiquetas[0].x < 86;
+  const circuito = geo
+    ? Array.from({ length: 73 }, (_, i) => {
+        const s = geo.proyectar(geo.puntoPista(i / 72));
+        return `${i ? 'L' : 'M'}${s.x.toFixed(1)} ${s.y.toFixed(1)}`;
+      }).join(' ')
+    : '';
 
   return (
     <div>
       <div
         ref={contenedorRef}
         role="img"
-        aria-label="Esferas desordenadas que se ordenan en un flujo de cinco pasos (pedido, almacén, envío, factura y cobro) por el que circulan: primero entender, después automatizar."
+        aria-label="Esferas desordenadas que se ordenan en seis departamentos (marketing, ventas, compras, operaciones, calidad y administración) conectados por un circuito por el que circulan: primero entender, después automatizar."
         className="relative h-[260px] w-full touch-pan-y select-none sm:h-[380px] lg:h-[560px]"
       >
-        {/* La línea del flujo, por detrás de las esferas. */}
-        {etiquetas.length > 0 && (
+        {/* El circuito que conecta los departamentos, por detrás de las esferas. */}
+        {circuito && (
           <svg aria-hidden="true" className="absolute inset-0 h-full w-full" width="100%" height="100%">
-            <line
-              x1={etiquetas[0].x}
-              y1={etiquetas[0].y}
-              x2={etiquetas[etiquetas.length - 1].x}
-              y2={etiquetas[etiquetas.length - 1].y}
+            <path
+              d={circuito}
+              fill="none"
               stroke="var(--color-celeste)"
               strokeWidth="2"
-              strokeLinecap="round"
+              strokeLinejoin="round"
               className={`transition-opacity duration-700 ${ordenada ? 'opacity-100' : 'opacity-0'}`}
             />
           </svg>
@@ -222,25 +231,22 @@ export function EscenaEsferas() {
         )}
 
         <ol aria-hidden="true">
-          {etiquetas.map((e, i) => {
-            const arriba = alternar && i % 2 === 1;
-            return (
-              <li
-                key={ESTACIONES[i]}
-                className={`absolute whitespace-nowrap text-detalle font-medium text-marino transition-opacity duration-700 ${
-                  ordenada ? 'opacity-100' : 'opacity-0'
-                }`}
-                style={{
-                  left: e.x,
-                  top: arriba ? e.techo - 8 : e.y + e.radio + 10,
-                  transform: `translate(-50%, ${arriba ? '-100%' : '0'})`,
-                  transitionDelay: ordenada ? `${i * 90}ms` : '0ms',
-                }}
-              >
-                {ESTACIONES[i]}
-              </li>
-            );
-          })}
+          {etiquetas.map((e, i) => (
+            <li
+              key={DEPARTAMENTOS[i]}
+              className={`absolute whitespace-nowrap text-detalle font-medium text-marino transition-opacity duration-700 ${
+                ordenada ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{
+                left: e.x,
+                top: e.y,
+                transform: `translate(-50%, ${e.detras ? '-100%' : '0'})`,
+                transitionDelay: ordenada ? `${i * 80}ms` : '0ms',
+              }}
+            >
+              {DEPARTAMENTOS[i]}
+            </li>
+          ))}
         </ol>
       </div>
 

@@ -14,7 +14,6 @@ import {
   SeccionQueRecibes,
   SeccionTeSuena,
 } from '@/components/portada/Secciones';
-import { hayFotoDavid } from '@/lib/foto-david';
 import { URL_CONTACTO } from '@/lib/marca';
 
 export default function Portada() {
@@ -34,7 +33,7 @@ export default function Portada() {
               <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-8 lg:mt-10">
                 <EnlaceBoton href="/test">Empezar el test (3 minutos)</EnlaceBoton>
                 <EnlaceBoton href={URL_CONTACTO} variante="texto" className="self-start sm:self-auto">
-                  Hablar con David
+                  Contacto
                 </EnlaceBoton>
               </div>
             </div>
@@ -50,7 +49,7 @@ export default function Portada() {
         <SeccionComoTrabajamos />
         <SeccionQueRecibes />
         <SeccionPreguntas />
-        <SeccionFinal conFoto={hayFotoDavid()} />
+        <SeccionFinal />
       </main>
       <Pie />
     </>

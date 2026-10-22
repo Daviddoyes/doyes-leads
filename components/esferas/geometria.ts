@@ -1,14 +1,19 @@
-// Cámara, flujo y proyección de la escena de esferas. Sin WebGL: la usan el
+// Cámara, circuito y proyección de la escena de esferas. Sin WebGL: la usan el
 // motor (motor.ts) y la imagen fija (con "reducir movimiento"), para que los
-// nombres de los pasos caigan en el mismo sitio en las dos.
+// nombres de los departamentos caigan en el mismo sitio en las dos.
 
 export type Vec3 = [number, number, number];
 
-export const ESTACIONES = ['Pedido', 'Almacén', 'Envío', 'Factura', 'Cobro'];
+/**
+ * Los seis departamentos, en el orden del circuito: tres por delante (de
+ * izquierda a derecha) y tres por detrás (de derecha a izquierda).
+ */
+export const DEPARTAMENTOS = ['Marketing', 'Ventas', 'Compras', 'Operaciones', 'Calidad', 'Administración'];
+export const POR_FILA = 3;
 
 const CAMPO_VISION = (32 * Math.PI) / 180;
-// Cámara algo elevada: el circuito se lee como un óvalo, no como dos filas.
-const OJO: Vec3 = [0, 4.6, 9.4];
+// Cámara elevada: el circuito se lee como un óvalo, con una fila delante y otra detrás.
+const OJO: Vec3 = [0, 6, 8.6];
 const MIRA: Vec3 = [0, -0.3, 0];
 const CERCA = 0.1;
 const LEJOS = 100;
@@ -30,12 +35,11 @@ export interface Geometria {
   ancho: number;
   alto: number;
   proyeccion: Float32Array;
+  /** Un punto por departamento (ver DEPARTAMENTOS). */
   estaciones: Vec3[];
-  /** El punto de la vuelta (por detrás) que queda detrás de cada paso. */
-  estacionesFondo: Vec3[];
-  /** Separación entre pasos, en unidades de la escena. */
+  /** Separación entre departamentos de una misma fila, en unidades de la escena. */
   separacion: number;
-  /** Radio de los pasos y de las piezas cuando están ordenados. */
+  /** Radio de los departamentos y de las piezas cuando están ordenados. */
   radioEstacion: number;
   radioPieza: number;
   /** Ancho y alto de la zona visible alrededor del flujo, para repartir el desorden. */
@@ -57,22 +61,26 @@ export function getGeometria(ancho: number, alto: number): Geometria {
 
   // El circuito entero (recta, curvas y el radio de los pasos) cabe en el ancho
   // visible con margen, sin pasar de un máximo en pantallas anchas.
-  const PROPORCION_FONDO = 0.36;
-  const anchoFlujo = Math.min((mitadAncho * 2 * 0.84 - 0.7) / (1 + PROPORCION_FONDO), 7.6);
-  const separacion = anchoFlujo / (ESTACIONES.length - 1);
-  const fondoPista = Math.min(2.4, anchoFlujo * PROPORCION_FONDO);
-  const tamano = Math.min(1, separacion / 1.3);
-  const radioEstacion = 0.34 * tamano;
-  const radioPieza = 0.13 * tamano;
+  // El óvalo es profundo para que las dos filas no se monten en pantalla.
+  const PROPORCION_FONDO = 0.6;
+  const anchoFlujo = Math.min((mitadAncho * 2 * 0.86 - 0.7) / (1 + PROPORCION_FONDO), 6.4);
+  const separacion = anchoFlujo / (POR_FILA - 1);
+  const fondoPista = Math.min(3.4, anchoFlujo * PROPORCION_FONDO);
+  const tamano = Math.min(1, separacion / 2);
+  const radioEstacion = 0.42 * tamano;
+  const radioPieza = 0.15 * tamano;
   const y = MIRA[1];
-  const zDelante = 0.7;
-  const zCentro = zDelante - fondoPista / 2;
+  const zDelante = fondoPista / 2;
+  const zCentro = 0;
   const radioCurva = fondoPista / 2;
 
-  const estaciones: Vec3[] = ESTACIONES.map((_, i) => [-anchoFlujo / 2 + i * separacion, y, zDelante]);
-  const estacionesFondo: Vec3[] = estaciones.map(([x]) => [x, y, zDelante - fondoPista]);
+  const estaciones: Vec3[] = DEPARTAMENTOS.map((_, i) =>
+    i < POR_FILA
+      ? [-anchoFlujo / 2 + i * separacion, y, zDelante]
+      : [anchoFlujo / 2 - (i - POR_FILA) * separacion, y, zDelante - fondoPista],
+  );
 
-  // Circuito cerrado: recto por delante (los cinco pasos), curva, vuelta por detrás y curva.
+  // Circuito cerrado: recto por delante, curva, vuelta por detrás y curva.
   const largoCurva = Math.PI * radioCurva;
   const largo = 2 * anchoFlujo + 2 * largoCurva;
   function puntoPista(s: number): Vec3 {
@@ -117,7 +125,6 @@ export function getGeometria(ancho: number, alto: number): Geometria {
     alto,
     proyeccion,
     estaciones,
-    estacionesFondo,
     separacion,
     radioEstacion,
     radioPieza,

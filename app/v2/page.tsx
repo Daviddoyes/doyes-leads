@@ -19,7 +19,6 @@ import {
   SeccionQueRecibes,
   SeccionTeSuena,
 } from '@/components/portada/Secciones';
-import { hayFotoDavid } from '@/lib/foto-david';
 import { URL_CONTACTO } from '@/lib/marca';
 // Foto provisional de Unsplash (licencia de Unsplash, uso comercial libre):
 // https://unsplash.com/es/fotos/hombre-frente-a-una-mujer-izxMVv2Z9dw
@@ -82,7 +81,7 @@ export default function PortadaV2() {
                   variante="texto"
                   className="self-start !text-white decoration-white/50 hover:decoration-white sm:self-auto"
                 >
-                  Hablar con David
+                  Contacto
                 </EnlaceBoton>
               </div>
             </div>
@@ -95,7 +94,7 @@ export default function PortadaV2() {
         <SeccionComoTrabajamos captura={<MarcoNavegador />} />
         <SeccionQueRecibes />
         <SeccionPreguntas />
-        <SeccionFinal conFoto={hayFotoDavid()} />
+        <SeccionFinal />
       </main>
       <Pie />
     </div>

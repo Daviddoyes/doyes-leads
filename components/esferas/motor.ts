@@ -5,10 +5,10 @@
 //
 // Física: cada esfera va hacia su sitio con un muelle. En desorden, su sitio
 // flota despacio alrededor de una posición propia y las esferas se apartan
-// entre ellas; ordenadas, las cinco grandes son los pasos y las pequeñas
-// circulan por el circuito. El puntero las empuja con suavidad.
+// entre ellas; ordenadas, las seis grandes son los departamentos y las pequeñas
+// circulan por el circuito que los conecta. El puntero las empuja con suavidad.
 
-import { ARRIBA, DERECHA, getGeometria, type Geometria, type Vec3 } from './geometria';
+import { ARRIBA, DEPARTAMENTOS, DERECHA, getGeometria, type Geometria, type Vec3 } from './geometria';
 
 export interface OpcionesEscena {
   cantidad: number;
@@ -29,7 +29,7 @@ const MARINO: Color = [0, 0.047, 0.204];
 const CELESTE: Color = [0.082, 0.659, 0.961];
 const GRIS: Color = [0.62, 0.67, 0.76];
 const BLANCO: Color = [0.97, 0.97, 0.96];
-const ESTACIONES = 5;
+const ESTACIONES = DEPARTAMENTOS.length;
 
 interface Esfera {
   p: Vec3;
@@ -247,7 +247,7 @@ export function crearEscena(canvas: HTMLCanvasElement, { cantidad, dpr, onOrden 
       e.casa[2] + 0.4 * Math.sin(tiempo * e.ritmo[2] + e.retraso * 5),
     ];
     const enFlujo: Vec3 =
-      e.estacion >= 0 ? geo.estaciones[e.estacion] : geo.puntoPista(e.desfase + tiempoOrden * (0.32 / (geo.separacion * 10)));
+      e.estacion >= 0 ? geo.estaciones[e.estacion] : geo.puntoPista(e.desfase + tiempoOrden * (0.5 / (geo.separacion * 6)));
     const radioOrden = e.estacion >= 0 ? geo.radioEstacion : geo.radioPieza;
     const t = suavizar(e.orden);
     return {
@@ -291,7 +291,7 @@ export function crearEscena(canvas: HTMLCanvasElement, { cantidad, dpr, onOrden 
       }
     });
 
-    // Se apartan entre ellas mientras están desordenadas (ordenadas, las piezas atraviesan los pasos).
+    // Se apartan entre ellas mientras están desordenadas (ordenadas, las piezas atraviesan los departamentos).
     for (let i = 0; i < esferas.length; i++) {
       for (let j = i + 1; j < esferas.length; j++) {
         const a = esferas[i];
