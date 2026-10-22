@@ -1,19 +1,19 @@
 import Image from 'next/image';
 
-import { EMPRESA, PRODUCTO } from '@/lib/marca';
 import simbolo from '@/public/marca/simbolo.png';
 
-/** Marca del producto, como en el portal: símbolo "dD" + IA360Empresas y, debajo, "por Doyes Digital". */
+/**
+ * Logotipo IA360Empresas, "peso partido": el símbolo dD y el nombre en una
+ * línea, con IA360 en negrita y Empresas en peso normal, del mismo color.
+ */
 export function Logo() {
   return (
-    <span className="inline-flex items-center gap-2.5">
+    <span className="inline-flex items-center gap-3">
       {/* El nombre va en texto al lado: para lectores de pantalla el símbolo es decorativo. */}
-      <Image src={simbolo} alt="" className="h-8 w-auto" priority />
-      <span className="flex flex-col">
-        <span className="whitespace-nowrap font-titulos text-texto font-semibold leading-none tracking-tight text-marino">
-          {PRODUCTO}
-        </span>
-        <span className="mt-1 whitespace-nowrap text-detalle leading-none text-tinta-tenue">por {EMPRESA}</span>
+      <Image src={simbolo} alt="" className="h-9 w-auto shrink-0 sm:h-10" priority />
+      <span className="whitespace-nowrap font-titulos text-[1.5rem] leading-none tracking-[-0.025em] text-marino sm:text-[1.75rem]">
+        <span className="font-bold">IA360</span>
+        <span className="font-normal">Empresas</span>
       </span>
     </span>
   );

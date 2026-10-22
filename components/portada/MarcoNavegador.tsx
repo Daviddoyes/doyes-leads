@@ -14,7 +14,9 @@ function hayCaptura(): boolean {
   return existsSync(path.join(process.cwd(), 'public', 'portal', 'captura.png'));
 }
 
-export function MarcoNavegador({ oscuro = false }: { oscuro?: boolean }) {
+const PIE = 'Todo el diagnóstico sucede en un espacio privado: formularios, documentos y avances en un mismo sitio.';
+
+export function MarcoNavegador({ oscuro = false, pie = PIE }: { oscuro?: boolean; pie?: string }) {
   const conCaptura = hayCaptura();
   return (
     <figure className="mt-4 lg:mt-10">
@@ -43,7 +45,7 @@ export function MarcoNavegador({ oscuro = false }: { oscuro?: boolean }) {
         )}
       </div>
       <figcaption className={`mt-4 max-w-lectura text-detalle ${oscuro ? 'text-white/70' : 'text-tinta-tenue'}`}>
-        Todo el diagnóstico sucede en un espacio privado: formularios, documentos y avances en un mismo sitio.
+        {pie}
       </figcaption>
     </figure>
   );

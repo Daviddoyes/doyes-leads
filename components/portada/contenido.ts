@@ -7,11 +7,7 @@ export const TITULAR = 'Tecnología que te quita trabajo, no que te da más.';
 export const SUBTITULO =
   'Analizamos cómo funciona tu empresa y te decimos qué ordenar, qué automatizar y dónde la IA te ahorra tiempo y dinero. Y también dónde no hace falta.';
 
-/** Portada de la v1: el titular protagonista y, más abajo, el antiguo titular en "Lo que ganas". */
-/** En dos líneas en escritorio; en el móvil, el texto corre seguido. */
-export const TITULAR_AFILAR = ['Te ayudamos a', 'afilar el hacha.'];
-export const SUBTITULO_AFILAR =
-  'Antes de poner tecnología, afilamos cómo trabaja tu empresa. Después, la IA corta sola.';
+/** El título de "Lo que ganas". */
 export const TITULO_GANAS = 'Más tiempo. Más margen. Una empresa que no depende de una sola persona.';
 
 export const DOLORES = [

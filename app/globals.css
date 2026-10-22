@@ -39,7 +39,7 @@
 
   /*
    * Escala tipográfica: de 375 px a ~1024 px crece sola, sin saltos.
-   *   portada    48 → 144  titular protagonista (v1) Poppins 600
+   *   portada    43 → 96   titular protagonista (v1) Poppins 600
    *   display    40 → 76   titular de portada        Poppins 600
    *   titulo     28 → 44   títulos de sección        Poppins 500
    *   pregunta   24 → 34   pregunta del test         Poppins 500
@@ -47,7 +47,7 @@
    *   texto      17 → 18   texto                     Inter 400
    *   detalle    14 → 15   pie, ayudas, etiquetas    Inter 400/500
    */
-  --tam-portada: clamp(3rem, 0.9rem + 7.6vw, 9rem);
+  --tam-portada: clamp(2.5rem, 0.9rem + 7.6vw, 6rem);
   --tam-display: clamp(2.5rem, 1.2rem + 5.5vw, 4.75rem);
   --tam-titulo: clamp(1.75rem, 1.1rem + 2.6vw, 2.75rem);
   --tam-pregunta: clamp(1.5rem, 1.1rem + 1.6vw, 2.125rem);

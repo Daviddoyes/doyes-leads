@@ -1,13 +1,21 @@
 import Link from 'next/link';
 
+import { URL_CONTACTO } from '@/lib/marca';
+
 import { Logo } from './Logo';
 
 interface CabeceraProps {
-  /** Fuera del test, el único enlace: empezar el test. */
+  /** Fuera del test, un enlace a empezarlo. */
   conEnlaceTest?: boolean;
+  /** Cabecera mínima de la portada: solo "Contacto", pequeño, a la derecha. */
+  conContacto?: boolean;
 }
 
-export function Cabecera({ conEnlaceTest = false }: CabeceraProps) {
+const ENLACE =
+  'py-3 text-detalle font-medium text-marino underline decoration-gris-azulado underline-offset-[6px] transition-colors duration-150 hover:decoration-marino';
+
+export function Cabecera({ conEnlaceTest = false, conContacto = false }: CabeceraProps) {
+  const contactoExterno = URL_CONTACTO.startsWith('http');
   return (
     <header className="px-5 sm:px-8 lg:px-16">
       <div className="mx-auto flex h-16 max-w-[90rem] items-center justify-between gap-4 lg:h-24">
@@ -15,12 +23,14 @@ export function Cabecera({ conEnlaceTest = false }: CabeceraProps) {
           <Logo />
         </Link>
         {conEnlaceTest && (
-          <Link
-            href="/test"
-            className="py-3 text-detalle font-medium text-marino underline decoration-gris-azulado underline-offset-[6px] transition-colors duration-150 hover:decoration-marino"
-          >
+          <Link href="/test" className={ENLACE}>
             Empezar el test
           </Link>
+        )}
+        {conContacto && (
+          <a href={URL_CONTACTO} className={ENLACE} {...(contactoExterno && { target: '_blank', rel: 'noopener noreferrer' })}>
+            Contacto
+          </a>
         )}
       </div>
     </header>

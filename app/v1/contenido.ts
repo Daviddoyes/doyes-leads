@@ -1,0 +1,65 @@
+// Textos de la v1: lo esencial, en frases cortas, y todo hacia el test.
+// Los completos, en components/portada/contenido.ts.
+
+export const BOTON_TEST = 'Haz el test gratis';
+
+export const TITULAR = ['Ordena tu empresa.', 'Poténciala con IA.'];
+/** Una línea; en el móvil se parte por la pregunta. */
+export const LINEA = ['¿Cómo está la tuya?', 'Descúbrelo en 3 minutos.'];
+
+export const DOLORES = [
+  { titulo: 'Todo pasa por ti.', texto: 'Si faltas una semana, se para.' },
+  { titulo: 'Horas que se van.', texto: 'Copiar datos, preparar informes, responder lo mismo.' },
+  { titulo: 'Herramientas que nadie usa bien.', texto: 'Programas que se solapan y nadie aprovecha.' },
+  { titulo: 'La IA, sin saber por dónde empezar.', texto: 'Puede ayudarte, pero no quieres tirar el dinero.' },
+];
+
+export const GANAS = {
+  titulo: 'Tecnología que te quita trabajo, no que te da más.',
+  entradilla: 'Más tiempo. Más margen. Una empresa que no depende de una sola persona.',
+};
+
+export const METODO = {
+  titulo: 'Primero afilamos el hacha.',
+  texto: 'La IA no arregla una empresa desordenada. Por eso empezamos por entender cómo trabajáis.',
+  fases: [
+    { nombre: 'Bienvenida', descripcion: 'Firmamos la confidencialidad.' },
+    { nombre: 'Entender', descripcion: 'Cada área nos cuenta cómo trabaja.' },
+    { nombre: 'Hacer visible', descripcion: 'Dibujamos los procesos que más pesan.' },
+    { nombre: 'Ordenar y decidir', descripcion: 'Qué simplificar, qué automatizar y dónde aporta la IA.' },
+    { nombre: 'Plan', descripcion: 'Un roadmap priorizado, presentado en una sesión.' },
+  ],
+};
+
+export const PASOS = [
+  { nombre: 'Test IA360', texto: '10 preguntas y una llamada de 30 minutos.', precio: 'Gratis' },
+  { nombre: 'Diagnóstico IA360Empresas', texto: 'Mapa, oportunidades, seguridad y roadmap. De 7 a 30 días.', precio: 'Desde 3.000 € + IVA' },
+  { nombre: 'Implementación IA360Empresas', texto: 'Lo que valide el roadmap, con quien elijas.', precio: 'Presupuesto aparte' },
+];
+
+export const PIE_CAPTURA = 'Todo el diagnóstico, en tu espacio privado.';
+
+export const ENTREGABLES = [
+  { titulo: 'Un mapa de tu empresa hoy', texto: 'Dónde se pierde tiempo y se desordena el trabajo.' },
+  { titulo: 'Las oportunidades reales', texto: 'Qué automatizar, dónde aporta la IA y dónde no hace falta.' },
+  { titulo: 'La seguridad de cada una', texto: 'Riesgos evaluados antes de implementar nada.' },
+  { titulo: 'Un roadmap por impacto y riesgo', texto: 'Con el porqué de cada paso.' },
+];
+
+export const PREGUNTAS = [
+  {
+    pregunta: '¿Por qué pagar un diagnóstico?',
+    respuesta: 'Porque automatizar sin entender sale caro. Y el roadmap es tuyo: úsalo con quien quieras.',
+  },
+  {
+    pregunta: 'Ya tenemos IT.',
+    respuesta: 'Perfecto. IT mantiene los sistemas; nosotros miramos cómo trabaja la empresa. El roadmap le sirve de guía.',
+  },
+  {
+    pregunta: 'Ya usamos ChatGPT.',
+    respuesta: 'Buen comienzo. La diferencia está en llevar la IA a los procesos que más pesan, sin riesgos.',
+  },
+  { pregunta: 'No tenemos tiempo.', respuesta: 'Precisamente por eso. Os pedimos poco, y en 7 a 30 días está listo.' },
+  { pregunta: '¿Y si no hace falta IA?', respuesta: 'Te lo diremos. Decidir no implementar también es valor.' },
+  { pregunta: '¿Qué pasa con nuestros datos?', respuesta: 'Confidencialidad firmada desde el primer día y datos en Europa.' },
+];

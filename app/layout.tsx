@@ -9,7 +9,7 @@ import './globals.css';
 // next/font descarga las fuentes al compilar y las sirve desde la propia web:
 // no hay peticiones a Google desde el navegador del visitante.
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
-const poppins = Poppins({ variable: '--font-poppins', subsets: ['latin'], weight: ['500', '600'], display: 'swap' });
+const poppins = Poppins({ variable: '--font-poppins', subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' });
 
 const TITULO = 'IA360Empresas · Tecnología que te quita trabajo, no que te da más';
 const DESCRIPCION =
