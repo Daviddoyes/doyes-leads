@@ -11,9 +11,9 @@ import './globals.css';
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
 const poppins = Poppins({ variable: '--font-poppins', subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' });
 
-const TITULO = 'IA360Empresas · Tecnología que te quita trabajo, no que te da más';
+const TITULO = 'IA360Empresas · Ordena tu empresa. Poténciala con IA.';
 const DESCRIPCION =
-  'Analizamos cómo funciona tu empresa y te decimos qué ordenar, qué automatizar y dónde la IA te ahorra tiempo y dinero. Haz el Test IA360 en 3 minutos.';
+  'Haz el Test IA360 gratis: en 3 minutos sabrás cómo está tu empresa, qué ordenar y dónde la IA te ahorra tiempo y dinero.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(URL_SITIO),

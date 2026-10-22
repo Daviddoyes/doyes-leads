@@ -2,38 +2,17 @@ import type { ReactNode } from 'react';
 
 import { EnlaceBoton } from '@/components/Boton';
 
-import { DOLORES, ENTREGABLES, FASES, PASOS, PREGUNTAS_FRECUENTES, TITULO_GANAS } from './contenido';
+import { BOTON_TEST, DOLORES, ENTREGABLES, GANAS, METODO, PASOS, PREGUNTAS } from './contenido';
 
-// Las secciones de la portada, compartidas por / y sus versiones de prueba.
-// Cada una trae sus textos por defecto; una versión puede pasar los suyos
-// (más cortos) y, con `alTest`, terminar con el botón al test.
+// Las secciones de la portada. Todas terminan con el mismo botón al test.
 
 export const MARGENES = 'px-5 sm:px-8 lg:px-16';
 export const CONTENEDOR = 'mx-auto max-w-[90rem]';
 
-interface Dolor {
-  titulo: string;
-  texto: string;
-}
-interface Fase {
-  nombre: string;
-  descripcion: string;
-}
-interface Paso {
-  nombre: string;
-  texto: string;
-  precio: string;
-}
-interface Pregunta {
-  pregunta: string;
-  respuesta: string;
-}
-
-/** El botón al test con el que termina una sección. */
-function BotonTest({ texto, oscura = false }: { texto: string; oscura?: boolean }) {
+function BotonTest({ oscura = false }: { oscura?: boolean }) {
   return (
     <EnlaceBoton href="/test" className={`w-full sm:w-auto ${oscura ? '!bg-white !text-marino hover:!bg-fondo' : ''}`}>
-      {texto}
+      {BOTON_TEST}
     </EnlaceBoton>
   );
 }
@@ -46,12 +25,10 @@ interface SeccionProps {
   anchoCompleto?: ReactNode;
   /** A todo el ancho en azul marino, para dar contraste. */
   oscura?: boolean;
-  /** Texto del botón al test con el que termina la sección (sin él, no hay botón). */
-  alTest?: string;
 }
 
-/** Sección editorial: título a la izquierda (4 columnas), contenido a la derecha (8). */
-export function Seccion({ id, titulo, children, anchoCompleto, oscura = false, alTest }: SeccionProps) {
+/** Sección editorial: título a la izquierda (4 columnas), contenido a la derecha (8) y el botón al test. */
+function Seccion({ id, titulo, children, anchoCompleto, oscura = false }: SeccionProps) {
   return (
     <section id={id} aria-labelledby={`${id}-titulo`} className={`${MARGENES} ${oscura ? 'bg-marino text-white' : ''}`}>
       <div
@@ -62,21 +39,19 @@ export function Seccion({ id, titulo, children, anchoCompleto, oscura = false, a
         </h2>
         <div className="lg:col-span-8">{children}</div>
         {anchoCompleto && <div className="lg:col-span-12">{anchoCompleto}</div>}
-        {alTest && (
-          <div className="lg:col-span-8 lg:col-start-5">
-            <BotonTest texto={alTest} oscura={oscura} />
-          </div>
-        )}
+        <div className="lg:col-span-8 lg:col-start-5">
+          <BotonTest oscura={oscura} />
+        </div>
       </div>
     </section>
   );
 }
 
-export function SeccionTeSuena({ dolores = DOLORES, alTest }: { dolores?: Dolor[]; alTest?: string }) {
+export function SeccionTeSuena() {
   return (
-    <Seccion id="te-suena" titulo="¿Te suena?" alTest={alTest}>
+    <Seccion id="te-suena" titulo="¿Te suena?">
       <ul className="grid gap-x-12 sm:grid-cols-2">
-        {dolores.map((d) => (
+        {DOLORES.map((d) => (
           <li
             key={d.titulo}
             className="border-t border-linea py-6 first:border-t-0 first:pt-0 sm:[&:nth-child(2)]:border-t-0 sm:[&:nth-child(2)]:pt-0"
@@ -90,68 +65,34 @@ export function SeccionTeSuena({ dolores = DOLORES, alTest }: { dolores?: Dolor[
   );
 }
 
-interface SeccionGanasProps {
-  titulo?: string;
-  /** Una frase entre el título y el texto. */
-  entradilla?: string;
-  /** null quita el párrafo. */
-  texto?: string | null;
-  alTest?: string;
-}
-
-const TEXTO_GANAS =
-  'La tecnología tiene sentido cuando te devuelve horas, te ayuda a crecer o te deja vivir mejor. Si no, solo es otra herramienta más.';
-
-export function SeccionGanas({ titulo = TITULO_GANAS, entradilla, texto = TEXTO_GANAS, alTest }: SeccionGanasProps) {
+export function SeccionGanas() {
   return (
     <section aria-labelledby="ganas-titulo" className={MARGENES}>
       <div className={`${CONTENEDOR} border-t border-linea py-20 lg:py-28`}>
         <h2 id="ganas-titulo" className="max-w-[24ch] text-titulo text-marino">
-          {titulo}
+          {GANAS.titulo}
         </h2>
-        {entradilla && <p className="mt-6 max-w-[40ch] font-titulos text-subtitulo text-marino lg:mt-8">{entradilla}</p>}
-        {texto && <p className={`max-w-lectura text-tinta-suave ${entradilla ? 'mt-4' : 'mt-6 lg:mt-8'}`}>{texto}</p>}
-        {alTest && (
-          <div className="mt-10">
-            <BotonTest texto={alTest} />
-          </div>
-        )}
+        <p className="mt-6 max-w-[40ch] font-titulos text-subtitulo text-marino lg:mt-8">{GANAS.entradilla}</p>
+        <div className="mt-10">
+          <BotonTest />
+        </div>
       </div>
     </section>
   );
 }
 
-interface SeccionMetodoProps {
-  oscura?: boolean;
-  titulo?: string;
-  texto?: string;
-  fases?: Fase[];
-  alTest?: string;
-}
-
-const TEXTO_METODO =
-  'La IA no arregla una empresa desordenada: la hace ir más rápido en la dirección equivocada. Por eso empezamos por entender cómo trabajáis de verdad.';
-
-export function SeccionMetodo({
-  oscura = false,
-  titulo = 'Primero entender. Después automatizar.',
-  texto = TEXTO_METODO,
-  fases = FASES,
-  alTest,
-}: SeccionMetodoProps) {
-  const nodo = oscura ? 'border-white bg-marino' : 'border-marino bg-fondo';
+export function SeccionMetodo() {
   return (
     <Seccion
       id="metodo"
-      oscura={oscura}
-      titulo={titulo}
-      alTest={alTest}
+      oscura
+      titulo={METODO.titulo}
       anchoCompleto={
         <ol className="grid gap-8 lg:mt-8 lg:grid-cols-5 lg:gap-6">
-          {fases.map((f, i) => (
+          {METODO.fases.map((f, i) => (
             <li key={f.nombre} className="relative grid grid-cols-[1.125rem_1fr] gap-x-5 lg:block">
               {/* Tramo de línea hasta el nodo siguiente: hacia abajo en móvil, a la derecha en escritorio. */}
-              {i < fases.length - 1 && (
+              {i < METODO.fases.length - 1 && (
                 <span
                   aria-hidden="true"
                   className="absolute left-[7.5px] top-[13px] h-[calc(100%+2rem)] w-[3px] bg-celeste lg:left-[9px] lg:top-[7.5px] lg:h-[3px] lg:w-[calc(100%+1.5rem)]"
@@ -159,34 +100,26 @@ export function SeccionMetodo({
               )}
               <span
                 aria-hidden="true"
-                className={`relative mt-1 block h-[1.125rem] w-[1.125rem] rounded-full border-[1.5px] lg:mt-0 ${nodo}`}
+                className="relative mt-1 block h-[1.125rem] w-[1.125rem] rounded-full border-[1.5px] border-white bg-marino lg:mt-0"
               />
               <div className="lg:mt-6">
-                <p className={`text-detalle ${oscura ? 'text-white/65' : 'text-tinta-tenue'}`}>Fase {i + 1}</p>
-                <h3 className={`mt-1 text-subtitulo ${oscura ? 'text-white' : 'text-marino'}`}>{f.nombre}</h3>
-                <p className={`mt-2 max-w-[30ch] text-detalle ${oscura ? 'text-white/75' : 'text-tinta-suave'}`}>
-                  {f.descripcion}
-                </p>
+                <p className="text-detalle text-white/65">Fase {i + 1}</p>
+                <h3 className="mt-1 text-subtitulo text-white">{f.nombre}</h3>
+                <p className="mt-2 max-w-[30ch] text-detalle text-white/75">{f.descripcion}</p>
               </div>
             </li>
           ))}
         </ol>
       }
     >
-      <p className={`max-w-lectura ${oscura ? 'text-white/80' : 'text-tinta-suave'}`}>{texto}</p>
+      <p className="max-w-lectura text-white/80">{METODO.texto}</p>
     </Seccion>
   );
 }
 
-interface SeccionComoTrabajamosProps {
-  captura?: ReactNode;
-  pasos?: Paso[];
-  alTest?: string;
-}
-
-export function SeccionComoTrabajamos({ captura, pasos = PASOS, alTest }: SeccionComoTrabajamosProps) {
+export function SeccionComoTrabajamos() {
   return (
-    <Seccion id="como-trabajamos" titulo="Cómo trabajamos contigo" anchoCompleto={captura} alTest={alTest}>
+    <Seccion id="como-trabajamos" titulo="Cómo trabajamos contigo">
       <table className="w-full text-left">
         <thead className="sr-only lg:not-sr-only">
           <tr className="text-detalle text-tinta-tenue">
@@ -202,7 +135,7 @@ export function SeccionComoTrabajamos({ captura, pasos = PASOS, alTest }: Seccio
           </tr>
         </thead>
         <tbody>
-          {pasos.map((p) => (
+          {PASOS.map((p) => (
             <tr key={p.nombre} className="grid grid-cols-[1fr_auto] gap-x-6 gap-y-2 border-t border-linea py-6 lg:table-row">
               <th scope="row" className="font-titulos text-subtitulo font-medium text-marino lg:py-7 lg:pr-6 lg:align-top">
                 {p.nombre}
@@ -219,11 +152,11 @@ export function SeccionComoTrabajamos({ captura, pasos = PASOS, alTest }: Seccio
   );
 }
 
-export function SeccionQueRecibes({ entregables = ENTREGABLES, alTest }: { entregables?: Dolor[]; alTest?: string }) {
+export function SeccionQueRecibes() {
   return (
-    <Seccion id="que-recibes" titulo="Qué recibes con el Diagnóstico" alTest={alTest}>
+    <Seccion id="que-recibes" titulo="Qué recibes con el Diagnóstico">
       <ul className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
-        {entregables.map((e) => (
+        {ENTREGABLES.map((e) => (
           <li key={e.titulo} className="border-t border-linea pt-6">
             <h3 className="text-subtitulo text-marino">{e.titulo}</h3>
             <p className="mt-2 max-w-lectura text-tinta-suave">{e.texto}</p>
@@ -234,11 +167,11 @@ export function SeccionQueRecibes({ entregables = ENTREGABLES, alTest }: { entre
   );
 }
 
-export function SeccionPreguntas({ preguntas = PREGUNTAS_FRECUENTES, alTest }: { preguntas?: Pregunta[]; alTest?: string }) {
+export function SeccionPreguntas() {
   return (
-    <Seccion id="preguntas" titulo="Preguntas frecuentes" alTest={alTest}>
+    <Seccion id="preguntas" titulo="Preguntas frecuentes">
       <div className="border-b border-linea">
-        {preguntas.map((p) => (
+        {PREGUNTAS.map((p) => (
           <details key={p.pregunta} className="group border-t border-linea first:border-t-0">
             <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 font-titulos text-subtitulo font-medium text-marino [&::-webkit-details-marker]:hidden">
               {p.pregunta}
@@ -255,7 +188,7 @@ export function SeccionPreguntas({ preguntas = PREGUNTAS_FRECUENTES, alTest }: {
   );
 }
 
-export function SeccionFinal({ boton = 'Empezar el test' }: { boton?: string }) {
+export function SeccionFinal() {
   return (
     <section aria-labelledby="final-titulo" className={MARGENES}>
       <div className={`${CONTENEDOR} border-t border-linea py-20 lg:py-32`}>
@@ -264,7 +197,7 @@ export function SeccionFinal({ boton = 'Empezar el test' }: { boton?: string }) 
         </h2>
         <p className="mt-4 text-tinta-suave">Descúbrelo en 3 minutos.</p>
         <div className="mt-8">
-          <BotonTest texto={boton} />
+          <BotonTest />
         </div>
       </div>
     </section>

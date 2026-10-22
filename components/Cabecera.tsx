@@ -1,11 +1,12 @@
 import Link from 'next/link';
 
+import { BOTON_TEST } from '@/components/portada/contenido';
 import { URL_CONTACTO } from '@/lib/marca';
 
 import { Logo } from './Logo';
 
 interface CabeceraProps {
-  /** Fuera del test, un enlace a empezarlo. */
+  /** En las páginas legales, el enlace al test. */
   conEnlaceTest?: boolean;
   /** Cabecera mínima de la portada: solo "Contacto", pequeño, a la derecha. */
   conContacto?: boolean;
@@ -24,7 +25,7 @@ export function Cabecera({ conEnlaceTest = false, conContacto = false }: Cabecer
         </Link>
         {conEnlaceTest && (
           <Link href="/test" className={ENLACE}>
-            Empezar el test
+            {BOTON_TEST}
           </Link>
         )}
         {conContacto && (

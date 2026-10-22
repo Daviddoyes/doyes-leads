@@ -1,10 +1,9 @@
 import { EnlaceBoton } from '@/components/Boton';
 import { Cabecera } from '@/components/Cabecera';
-import { DelEnredoAlFlujo } from '@/components/DelEnredoAlFlujo';
+import { EscenaEngranajes } from '@/components/engranajes/EscenaEngranajes';
 import { Pie } from '@/components/Pie';
-import { SUBTITULO, TITULAR } from '@/components/portada/contenido';
+import { BOTON_TEST, LINEA, TITULAR } from '@/components/portada/contenido';
 import {
-  CONTENEDOR,
   MARGENES,
   SeccionComoTrabajamos,
   SeccionFinal,
@@ -14,31 +13,36 @@ import {
   SeccionQueRecibes,
   SeccionTeSuena,
 } from '@/components/portada/Secciones';
-import { URL_CONTACTO } from '@/lib/marca';
 
+// La portada: impacto visual, el mínimo texto y todo hacia el test.
 export default function Portada() {
   return (
     <>
-      {/* Sin enlace al test en la cabecera: el botón principal está justo debajo. */}
-      <Cabecera />
+      <Cabecera conContacto />
       <main id="contenido" className="flex-1">
-        {/* Portada: lo único audaz de la web. */}
-        <section aria-labelledby="portada-titulo" className={MARGENES}>
-          <div className={`${CONTENEDOR} grid items-center gap-14 pb-20 pt-6 lg:grid-cols-12 lg:gap-8 lg:pb-32 lg:pt-16`}>
-            <div className="lg:col-span-6">
-              <h1 id="portada-titulo" className="max-w-[12ch] text-display font-semibold text-marino">
-                {TITULAR}
-              </h1>
-              <p className="mt-5 max-w-[46ch] text-texto text-tinta-suave lg:mt-8">{SUBTITULO}</p>
-              <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-8 lg:mt-10">
-                <EnlaceBoton href="/test">Empezar el test (3 minutos)</EnlaceBoton>
-                <EnlaceBoton href={URL_CONTACTO} variante="texto" className="self-start sm:self-auto">
-                  Contacto
-                </EnlaceBoton>
-              </div>
-            </div>
-            <div className="lg:col-span-6 lg:pl-8">
-              <DelEnredoAlFlujo />
+        <section aria-labelledby="portada-titulo" className={`${MARGENES} text-center`}>
+          <div className="mx-auto max-w-[90rem] pb-10 pt-2 lg:pb-16 lg:pt-10">
+            <h1 id="portada-titulo" className="mx-auto text-portada font-semibold text-marino">
+              {TITULAR.map((linea, i) => (
+                <span key={linea} className="sm:block">
+                  {i > 0 && ' '}
+                  {linea}
+                </span>
+              ))}
+            </h1>
+            <p className="mx-auto mt-4 text-subtitulo text-tinta-suave lg:mt-6">
+              {LINEA.map((frase, i) => (
+                <span key={frase} className="block sm:inline">
+                  {i > 0 && <span className="hidden sm:inline"> </span>}
+                  {frase}
+                </span>
+              ))}
+            </p>
+            <EnlaceBoton href="/test" className="mt-6 w-full sm:w-auto sm:px-10 lg:mt-8">
+              {BOTON_TEST}
+            </EnlaceBoton>
+            <div className="-mx-5 mt-2 sm:mx-0 lg:mt-4">
+              <EscenaEngranajes />
             </div>
           </div>
         </section>

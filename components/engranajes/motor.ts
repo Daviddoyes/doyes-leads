@@ -1,4 +1,4 @@
-// La escena de engranajes de la portada (v1). Una esfera grande en el centro,
+// La escena de engranajes de la portada. Una esfera grande en el centro,
 // las seis de los departamentos y unas cuantas pequeñas. Primero flotan
 // desordenadas, chocan entre ellas y se apartan del puntero; al ordenarse,
 // los departamentos forman un anillo alrededor de la central y las pequeñas
