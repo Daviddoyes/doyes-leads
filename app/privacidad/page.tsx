@@ -2,7 +2,8 @@
  * PENDIENTE DE REVISIÓN LEGAL. Texto redactado como primera versión; debe
  * revisarlo un abogado antes de darlo por definitivo. Si cambian los
  * proveedores (alojamiento, base de datos, correo) o lo que guarda el portal
- * del Test IA360 (portal-doyes, tabla portal_leads), hay que actualizarlo.
+ * del Test IA360 (portal-doyes, tabla portal_leads) o de la prospección
+ * (portal_prospectos, apartado 9), hay que actualizarlo.
  */
 import type { Metadata } from 'next';
 
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 export default function Privacidad() {
   const email = <a href={`mailto:${D.email}`}>{D.email}</a>;
   return (
-    <PaginaLegal titulo="Política de privacidad" actualizado="octubre de 2026">
+    <PaginaLegal titulo="Política de privacidad" actualizado="26 de octubre de 2026">
       <p>
         Aquí te explicamos, en lenguaje claro, qué datos personales recogemos en esta web, para qué los usamos y qué
         derechos tienes, conforme al Reglamento General de Protección de Datos (RGPD) y a la Ley Orgánica 3/2018 de
@@ -38,8 +39,9 @@ export default function Privacidad() {
 
       <h2>2. Qué datos recogemos</h2>
       <p>
-        Solo recogemos datos cuando haces el <strong>Test IA360</strong> o nos escribes. Navegar por la web no requiere
-        darnos ningún dato. Al hacer el test, guardamos:
+        En esta web solo recogemos datos cuando haces el <strong>Test IA360</strong> o nos escribes (el contacto
+        comercial con empresas se explica en el apartado 9). Navegar por la web no requiere darnos ningún dato. Al hacer
+        el test, guardamos:
       </p>
       <ul>
         <li>
@@ -80,7 +82,10 @@ export default function Privacidad() {
         El resultado del test se calcula automáticamente a partir de tus respuestas, pero es solo una orientación: no se
         toma ninguna decisión con efectos jurídicos sobre ti ni sobre tu empresa.
       </p>
-      <p>No enviamos publicidad ni boletines, y no vendemos ni cedemos tus datos a nadie.</p>
+      <p>
+        No enviamos publicidad ni boletines (salvo el contacto comercial con empresas del apartado 9), y no vendemos ni
+        cedemos tus datos a nadie.
+      </p>
 
       <h2>4. Por qué podemos tratarlos (base legal)</h2>
       <ul>
@@ -159,7 +164,48 @@ export default function Privacidad() {
         aplicamos medidas técnicas y organizativas adecuadas al riesgo para evitar su pérdida o un acceso no autorizado.
       </p>
 
-      <h2>9. Cambios en esta política</h2>
+      <h2>9. Contacto comercial con empresas</h2>
+      <p>
+        Doyes Digital puede contactar con empresas para presentarles sus servicios. Para ello usamos únicamente{' '}
+        <strong>datos públicos de la empresa</strong>: su nombre, web, sector, ubicación, teléfono y email generales
+        publicados en su propia web, y el perfil profesional público de LinkedIn de la persona con la que hablamos.
+        Anotamos de dónde sale cada dato.
+      </p>
+      <p>
+        Primero contactamos por teléfono o LinkedIn. <strong>Solo enviamos un correo si la persona nos dice que quiere
+        recibirlo</strong>; guardamos su nombre, cargo, email y la fecha en que lo aceptó.
+      </p>
+      <TablaLegal
+        filas={[
+          ['Finalidad', 'Presentar nuestros servicios de consultoría y, si la empresa lo acepta, enviarle el Test IA360.'],
+          [
+            'Base legal',
+            'Interés legítimo en el contacto profesional entre empresas (artículo 6.1.f del RGPD y artículo 19 de la LOPDGDD) y, para el envío de correos, el consentimiento de la persona.',
+          ],
+          [
+            'Conservación',
+            'Mientras haya relación comercial o, sin respuesta, un máximo de dos años. Si nos pides no ser contactado, guardaremos solo el dato necesario para no volver a hacerlo.',
+          ],
+          [
+            'Derechos',
+            <span key="derechos">
+              Puedes oponerte en cualquier momento respondiendo «no» a nuestro mensaje o escribiendo a{' '}
+              <a href="mailto:doyesdigital@gmail.com">doyesdigital@gmail.com</a>, y ejercer los derechos de acceso,
+              rectificación y supresión. También puedes reclamar ante la Agencia Española de Protección de Datos (
+              <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">aepd.es</a>).
+            </span>,
+          ],
+        ]}
+      />
+
+      <h2>10. WhatsApp</h2>
+      <p>
+        Si nos contactas por WhatsApp, tus mensajes los gestiona también <strong>Meta Platforms Ireland Ltd.</strong>,
+        proveedor del servicio, según su propia política de privacidad. Esto puede implicar transferencias de datos fuera
+        de la UE, amparadas por las garantías aprobadas por Meta.
+      </p>
+
+      <h2>11. Cambios en esta política</h2>
       <p>
         Si cambiamos algo importante, lo actualizaremos aquí y cambiaremos la fecha de arriba. Si el cambio afecta a datos
         que ya nos diste, te avisaremos.
