@@ -22,7 +22,7 @@ export default function Portada() {
       <main id="contenido" className="flex-1">
         <section aria-labelledby="portada-titulo" className={`${MARGENES} text-center`}>
           <div className="mx-auto max-w-[90rem] pb-10 pt-2 lg:pb-16 lg:pt-10">
-            <h1 id="portada-titulo" className="mx-auto text-portada font-semibold text-marino">
+            <h1 id="portada-titulo" className="mx-auto text-portada font-semibold text-tinta">
               {TITULAR.map((linea, i) => (
                 <span key={linea} className="sm:block">
                   {i > 0 && ' '}

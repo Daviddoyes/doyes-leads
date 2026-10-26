@@ -13,7 +13,7 @@ interface CabeceraProps {
 }
 
 const ENLACE =
-  'py-3 text-detalle font-medium text-marino underline decoration-gris-azulado underline-offset-[6px] transition-colors duration-150 hover:decoration-marino';
+  'py-3 text-detalle font-medium text-tinta underline decoration-white/35 underline-offset-[6px] transition-colors duration-150 hover:decoration-celeste';
 
 export function Cabecera({ conEnlaceTest = false, conContacto = false }: CabeceraProps) {
   const contactoExterno = URL_CONTACTO.startsWith('http');

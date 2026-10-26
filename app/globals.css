@@ -3,17 +3,20 @@
 @tailwind utilities;
 
 /*
- * Tokens de diseño. Colores de marca, los mismos que el portal
- * (portal-doyes/src/app/globals.css). Cómo se usan:
+ * Tokens de diseño: el mundo nocturno de la portada, en toda la web.
  *
- *   fondo         #F7F6F3  papel cálido, ~85 % de la página. No se alterna con blanco.
- *   superficie    #FFFFFF  solo campos y respuestas del test.
- *   marino        #000C34  texto y botón principal.
- *   gris-azulado  #A8B3C7  líneas de 1 px y bordes.
- *   celeste       #15A8F5  acento, solo en tres sitios: la línea ordenada (animación
- *                          y método), la barra de progreso del test y el foco del
- *                          teclado. Nunca en texto (2,6:1 sobre blanco).
- *   semáforo               verde, ámbar y rojo, solo en el resultado del test.
+ *   fondo         #030A26  azul noche, la base de toda la página
+ *   noche         #01030D  casi negro azulado: los bordes, el pie
+ *   superficie             cristal oscuro: blanco al 4 %, para campos y paneles
+ *   tinta         #F3F6FB  títulos y texto principal (blanco suave)
+ *   tinta-suave   #B9C2D6  texto (10,6:1 sobre el fondo)
+ *   tinta-tenue   #94A0B8  ayudas y datos pequeños (7:1 sobre el fondo)
+ *   linea                  luz celeste muy fina: separadores
+ *   celeste       #15A8F5  la luz: botón, línea del método, progreso del test, foco
+ *   marino        #000C34  solo el texto sobre celeste (8,6:1)
+ *   semáforo               verde, ámbar y rojo, aclarados para leerse sobre noche
+ *
+ * Contraste: todos los textos pasan AA (4,5:1) sobre el fondo y sus variaciones.
  */
 :root {
   --color-marino: #000c34;
@@ -21,36 +24,39 @@
   --color-celeste: #15a8f5;
   --color-gris-azulado: #a8b3c7;
 
-  --color-fondo: #f7f6f3;
-  --color-superficie: #ffffff;
-  --color-tinta: var(--color-marino);
-  --color-tinta-suave: #4b5468;
-  --color-tinta-tenue: #636c7f;
-  --color-linea: color-mix(in srgb, var(--color-gris-azulado) 60%, var(--color-fondo));
-  --color-borde-campo: #7e8695;
-  --color-acento: #0f6a9a;
+  --color-fondo: #030a26;
+  --color-noche: #01030d;
+  --color-superficie: rgba(255, 255, 255, 0.04);
+  --color-tinta: #f3f6fb;
+  --color-tinta-suave: #b9c2d6;
+  --color-tinta-tenue: #94a0b8;
+  --color-linea: rgba(120, 190, 245, 0.18);
+  --color-borde-campo: rgba(185, 200, 230, 0.34);
+  --color-acento: #6ccbfa;
 
-  --color-exito: #2c6a4c;
-  --color-exito-suave: #e6f1eb;
-  --color-aviso: #8a5300;
-  --color-aviso-suave: #fbf0dc;
-  --color-peligro: #a23b2a;
-  --color-peligro-suave: #f8e7e3;
+  --color-exito: #4fd394;
+  --color-exito-suave: rgba(79, 211, 148, 0.13);
+  --color-aviso: #f6bd54;
+  --color-aviso-suave: rgba(246, 189, 84, 0.13);
+  --color-peligro: #ff8a78;
+  --color-peligro-suave: rgba(255, 138, 120, 0.13);
 
   /*
    * Escala tipográfica: de 375 px a ~1024 px crece sola, sin saltos.
-   *   portada    43 → 96   titular de la portada     Poppins 600
-   *   display    40 → 76   cifra del resultado       Poppins 600
-   *   titulo     28 → 44   títulos de sección        Poppins 500
-   *   pregunta   24 → 34   pregunta del test         Poppins 500
-   *   subtitulo  19 → 22   subtítulos                Poppins 500
-   *   texto      17 → 18   texto                     Inter 400
-   *   detalle    14 → 15   pie, ayudas, etiquetas    Inter 400/500
+   *   portada    titular de la portada        display (Sofia Sans Extra Condensed) 800, mayúsculas
+   *   seccion    40 → 76   títulos de sección display 800, mayúsculas
+   *   display    40 → 76   cifra del resultado display 800
+   *   titulo     30 → 48   titulares          display 700
+   *   pregunta   30 → 48   pregunta del test   display 700
+   *   subtitulo  19 → 22   subtítulos          display 700
+   *   texto      17 → 18   texto               Inter 400
+   *   detalle    14 → 15   pie, ayudas         Inter 400/500
    */
   --tam-portada: clamp(2.5rem, 0.9rem + 7.6vw, 6rem);
+  --tam-seccion: clamp(2.5rem, 1.5rem + 4.4vw, 4.75rem);
   --tam-display: clamp(2.5rem, 1.2rem + 5.5vw, 4.75rem);
-  --tam-titulo: clamp(1.75rem, 1.1rem + 2.6vw, 2.75rem);
-  --tam-pregunta: clamp(1.5rem, 1.1rem + 1.6vw, 2.125rem);
+  --tam-titulo: clamp(1.875rem, 1.2rem + 2.8vw, 3rem);
+  --tam-pregunta: clamp(1.875rem, 1.25rem + 2.6vw, 3rem);
   --tam-subtitulo: clamp(1.1875rem, 1rem + 0.8vw, 1.375rem);
   --tam-texto: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);
   --tam-detalle: clamp(0.875rem, 0.83rem + 0.12vw, 0.9375rem);
@@ -59,20 +65,41 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    background: var(--color-noche);
+    color-scheme: dark;
   }
 
+  /* La noche con un halo azul arriba: en las páginas interiores lo abarca todo, cabecera incluida. */
   body {
-    background: var(--color-fondo);
+    background:
+      radial-gradient(ellipse 90% 520px at 50% -120px, rgba(17, 60, 150, 0.5) 0%, rgba(3, 10, 38, 0) 100%) no-repeat,
+      var(--color-fondo);
     color: var(--color-tinta);
     font-size: var(--tam-texto);
     line-height: 1.6;
   }
 
   h1,
-  h2,
+  h2 {
+    font-family: var(--font-display), var(--font-inter), ui-sans-serif, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    text-wrap: balance;
+  }
+
+  /* Los encabezados de tamaño subtítulo, también en Inter: son etiquetas, no titulares. */
+  h1.text-subtitulo,
+  h2.text-subtitulo {
+    font-family: var(--font-inter), ui-sans-serif, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Los subtítulos pequeños, en Inter: la display estrecha se lee peor a ese tamaño. */
   h3 {
-    font-family: var(--font-poppins), var(--font-inter), ui-sans-serif, sans-serif;
-    font-weight: 500;
+    font-family: var(--font-inter), ui-sans-serif, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
 
@@ -91,6 +118,70 @@
   :focus-visible {
     outline: 2px solid var(--color-celeste);
     outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /*
+   * El botón de la web: celeste con un degradado sutil, un borde fino de luz y un
+   * resplandor alrededor que crece al pasar el ratón o el dedo. Texto marino.
+   */
+  .boton-luz {
+    position: relative;
+    border-radius: 12px;
+    color: var(--color-marino);
+    font-weight: 600;
+    background: linear-gradient(180deg, #5ccbfb 0%, #22aff6 48%, #0f97e0 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -1px 0 rgba(0, 40, 90, 0.25),
+      0 0 0 1px rgba(150, 220, 255, 0.55),
+      0 8px 28px -8px rgba(21, 168, 245, 0.65),
+      0 0 22px -6px rgba(21, 168, 245, 0.55);
+    transition:
+      box-shadow 220ms ease,
+      filter 220ms ease,
+      transform 120ms ease;
+  }
+  .boton-luz:hover {
+    filter: brightness(1.06);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 -1px 0 rgba(0, 40, 90, 0.25),
+      0 0 0 1px rgba(170, 228, 255, 0.75),
+      0 10px 38px -6px rgba(21, 168, 245, 0.8),
+      0 0 34px -4px rgba(21, 168, 245, 0.7);
+  }
+  .boton-luz:active {
+    transform: translateY(1px);
+    filter: brightness(0.98);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 0 0 1px rgba(150, 220, 255, 0.6),
+      0 4px 18px -6px rgba(21, 168, 245, 0.6);
+  }
+  .boton-luz:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+  }
+  .boton-luz:disabled {
+    cursor: not-allowed;
+    filter: saturate(0.6) brightness(0.85);
+  }
+
+  /* Separador: una línea de luz muy fina que se apaga hacia los lados. */
+  .linea-luz {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(21, 168, 245, 0.45) 22%, rgba(120, 200, 255, 0.55) 50%, rgba(21, 168, 245, 0.45) 78%, transparent);
+  }
+
+  /* Panel de cristal oscuro, muy sutil: sin sombra, un borde de luz apenas visible. */
+  .cristal {
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
+    box-shadow:
+      inset 0 0 0 1px rgba(150, 200, 255, 0.11),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 }
 

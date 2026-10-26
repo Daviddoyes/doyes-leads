@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Poppins } from 'next/font/google';
+import { Inter, Sofia_Sans_Extra_Condensed } from 'next/font/google';
 
 import { CapturaOrigen } from '@/components/CapturaOrigen';
 import { URL_SITIO } from '@/lib/marca';
@@ -9,7 +9,8 @@ import './globals.css';
 // next/font descarga las fuentes al compilar y las sirve desde la propia web:
 // no hay peticiones a Google desde el navegador del visitante.
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
-const poppins = Poppins({ variable: '--font-poppins', subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' });
+// Display de los títulos: estrecha, con carácter, en mayúsculas en titulares y secciones.
+const display = Sofia_Sans_Extra_Condensed({ variable: '--font-display', subsets: ['latin'], weight: ['700', '800'], display: 'swap' });
 
 const TITULO = 'IA360Empresas · Ordena tu empresa. Poténciala con IA.';
 const DESCRIPCION =
@@ -34,14 +35,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#f7f6f3',
+  themeColor: '#01030d',
   width: 'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} ${poppins.variable} antialiased`}>
+    <html lang="es" className={`${inter.variable} ${display.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col font-sans">
         <CapturaOrigen />
         {children}

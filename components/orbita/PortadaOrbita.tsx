@@ -23,10 +23,12 @@ export function PortadaOrbita({ claseFuente }: { claseFuente: string }) {
           <EscenaOrbita />
           {/* Oscurece la parte de abajo para que el texto se lea siempre sobre la escena. */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[62%] bg-gradient-to-t from-[#01030d] via-[#01030d]/70 to-transparent" />
-          <div className="px-5 pb-10 text-center sm:px-8 sm:pb-12 lg:px-16 lg:pb-16 lg:text-left">
+          {/* data-zona-texto: los nombres de la escena nunca se pintan encima de estas piezas. */}
+          <div className="flex flex-col items-center px-5 pb-10 text-center sm:px-8 sm:pb-12 lg:items-start lg:px-16 lg:pb-16 lg:text-left">
             <h1
               id="portada-titulo"
-              className={`${claseFuente} text-[clamp(3.25rem,15.5vw,4.75rem)] uppercase leading-[0.86] text-white sm:text-[clamp(4.75rem,9vw,8.25rem)]`}
+              data-zona-texto
+              className={`${claseFuente} w-fit text-[clamp(3.25rem,15.5vw,4.75rem)] uppercase leading-[0.86] text-white sm:text-[clamp(4.75rem,9vw,8.25rem)]`}
             >
               {TITULAR.map((frase) => (
                 <span key={frase} className="block">
@@ -34,13 +36,10 @@ export function PortadaOrbita({ claseFuente }: { claseFuente: string }) {
                 </span>
               ))}
             </h1>
-            <p className="mt-4 text-detalle text-[#b9c2d6] sm:text-texto lg:mt-6">
+            <p data-zona-texto className="mt-4 w-fit text-detalle text-tinta-suave sm:text-texto lg:mt-6">
               {LINEA.join(' ')}
             </p>
-            <EnlaceBoton
-              href="/test"
-              className="mt-6 w-full !bg-celeste !text-marino hover:!bg-[#4dbcf7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto sm:px-10 lg:mt-8"
-            >
+            <EnlaceBoton data-zona-texto href="/test" className="mt-6 w-full sm:w-auto sm:px-10 lg:mt-8">
               {BOTON_TEST}
             </EnlaceBoton>
           </div>

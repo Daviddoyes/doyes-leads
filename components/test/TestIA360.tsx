@@ -220,7 +220,7 @@ export function TestIA360() {
   return (
     <div className="mx-auto w-full max-w-[40rem] px-5 pb-16 pt-2 sm:pt-8">
       <div className="flex items-baseline justify-between gap-4">
-        <h1 className="text-subtitulo text-marino">Test IA360</h1>
+        <h1 className="text-subtitulo text-tinta">Test IA360</h1>
         {!resultado && (
           <p className="text-detalle tabular-nums text-tinta-tenue" aria-live="polite">
             {paso === PASO_CONTACTO ? 'Tus datos' : `${numero} / ${TOTAL_PREGUNTAS}`}
@@ -233,9 +233,9 @@ export function TestIA360() {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={progreso}
-        className="mt-3 h-[2px] bg-linea"
+        className="mt-3 h-px bg-white/10"
       >
-        <div className="h-full bg-celeste transition-[width] duration-300 ease-out" style={{ width: `${progreso}%` }} />
+        <div className="h-full bg-gradient-to-r from-celeste/40 via-celeste to-[#9fdcff] shadow-[0_0_10px_1px_rgba(21,168,245,0.8)] transition-[width] duration-300 ease-out" style={{ width: `${progreso}%` }} />
       </div>
 
       {resultado ? (
@@ -247,7 +247,7 @@ export function TestIA360() {
               <button
                 type="button"
                 onClick={volver}
-                className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-detalle font-medium text-tinta-suave transition-colors duration-150 hover:text-marino"
+                className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-detalle font-medium text-tinta-suave transition-colors duration-150 hover:text-tinta"
               >
                 <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4" fill="none">
                   <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -264,7 +264,7 @@ export function TestIA360() {
               <fieldset>
                 <legend className="sr-only">Pregunta {pregunta.numero}</legend>
                 <p className="text-detalle text-tinta-tenue">{NOMBRES_BLOQUE[pregunta.bloque]}</p>
-                <h2 ref={tituloRef} tabIndex={-1} className="mt-2 text-pregunta text-marino outline-none">
+                <h2 ref={tituloRef} tabIndex={-1} className="mt-2 text-pregunta text-tinta outline-none">
                   {pregunta.texto}
                 </h2>
                 <ul className="mt-8 space-y-3">
@@ -276,10 +276,10 @@ export function TestIA360() {
                           type="button"
                           onClick={() => responder(paso, valor)}
                           aria-pressed={elegida}
-                          className={`flex min-h-16 w-full items-center rounded-boton border px-5 py-3 text-left text-texto transition-colors duration-150 ${
+                          className={`flex min-h-16 w-full items-center rounded-xl border px-5 py-3 text-left text-texto transition-all duration-200 ${
                             elegida
-                              ? 'border-marino bg-marino text-white'
-                              : 'border-gris-azulado bg-superficie text-tinta hover:border-marino'
+                              ? 'border-celeste bg-celeste/15 text-white shadow-[0_0_28px_-6px_rgba(21,168,245,0.75),inset_0_0_0_1px_rgba(21,168,245,0.6)]'
+                              : 'border-white/10 bg-white/[0.035] text-tinta hover:border-celeste/50 hover:bg-white/[0.06]'
                           }`}
                         >
                           {texto}
@@ -294,7 +294,7 @@ export function TestIA360() {
             {paso === PASO_ABIERTA && (
               <div>
                 <p className="text-detalle text-tinta-tenue">Para terminar</p>
-                <h2 ref={tituloRef} tabIndex={-1} className="mt-2 text-pregunta text-marino outline-none">
+                <h2 ref={tituloRef} tabIndex={-1} className="mt-2 text-pregunta text-tinta outline-none">
                   <label htmlFor="respuesta-abierta">{PREGUNTA_ABIERTA.texto}</label>
                 </h2>
                 <p className="mt-3 text-tinta-suave">Con dos o tres líneas basta.</p>
@@ -312,7 +312,7 @@ export function TestIA360() {
                   aria-invalid={Boolean(errorAbierta)}
                   aria-describedby={errorAbierta ? 'error-abierta' : undefined}
                   aria-required
-                  className={`mt-6 block w-full resize-y rounded-boton border bg-superficie px-4 py-3 text-texto text-tinta placeholder:text-tinta-tenue/80 focus:border-marino focus:outline-none ${
+                  className={`mt-6 block w-full resize-y rounded-xl border bg-white/[0.04] px-4 py-3 text-texto text-tinta placeholder:text-tinta-tenue focus:border-celeste focus:bg-white/[0.06] focus:outline-none ${
                     errorAbierta ? 'border-peligro' : 'border-borde-campo'
                   }`}
                 />

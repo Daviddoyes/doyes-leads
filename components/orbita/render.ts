@@ -93,13 +93,13 @@ const vec3 CELESTE = vec3(0.082, 0.659, 0.961);
 
 // Entorno de estudio oscuro: suelo casi negro, un anillo de luz celeste en el
 // horizonte y una ventana blanca arriba a la izquierda. Pasa de 1: brilla.
-vec3 entorno(vec3 r) {
+vec3 entorno(vec3 r, float luz) {
   vec3 c = mix(vec3(0.005, 0.01, 0.04), vec3(0.03, 0.08, 0.2), smoothstep(-0.4, 0.9, r.y));
   c += CELESTE * 1.4 * exp(-pow((r.y - 0.05) * 8.0, 2.0));
   // Luces pequeñas y finas: con el bloom ya brillan; grandes, serían manchas.
   float ventana = smoothstep(0.965, 0.99, dot(r, normalize(vec3(-0.55, 0.7, 0.45))));
-  c += vec3(2.4) * ventana;
-  c += vec3(0.6, 0.85, 1.0) * 0.8 * smoothstep(0.975, 0.995, dot(r, normalize(vec3(0.7, 0.25, 0.65))));
+  c += vec3(2.4) * ventana * luz;
+  c += vec3(0.6, 0.85, 1.0) * 0.8 * luz * smoothstep(0.975, 0.995, dot(r, normalize(vec3(0.7, 0.25, 0.65))));
   return c;
 }
 
@@ -150,24 +150,26 @@ void main() {
     }
     vec3 R = reflect(-V, n);
     float dif = max(dot(n, L), 0.0);
-    float esp = pow(max(dot(n, normalize(L + V)), 0.0), 220.0);
+    float esp = pow(max(dot(n, normalize(L + V)), 0.0), 90.0) * 0.35;
     col = base * (0.25 + 0.6 * dif);
-    col = mix(col, entorno(R), 0.12 + 0.75 * fres);
-    col += vec3(esp * 2.0);
+    col = mix(col, entorno(R, 0.3), 0.1 + 0.6 * fres);
+    col += vec3(esp);
     // La "D", de plata: clara, con la luz de la escena por encima.
-    vec3 plata = vec3(0.62, 0.7, 0.84) * (0.45 + 0.55 * dif) + entorno(R) * 0.45 + vec3(esp * 1.5);
+    vec3 plata = vec3(0.6, 0.67, 0.8) * (0.5 + 0.5 * dif) + entorno(R, 0.3) * 0.3 + vec3(esp);
     col = mix(col, plata, metal);
-    col += CELESTE * marca * 2.4;
+    // La "d": su celeste con una luz suave propia, sin llegar a neón.
+    col = mix(col, CELESTE * (0.75 + 0.35 * dif), marca);
+    col += CELESTE * marca * 0.28;
     // El borde, de luz celeste: la marca rodeada de luz.
-    col += CELESTE * pow(1.0 - cosV, 3.0) * 1.3;
+    col += CELESTE * pow(1.0 - cosV, 3.0) * 0.55;
     alfa = 1.0;
   } else {
     // Cristal: refleja el entorno en los bordes, deja ver a través por el centro, con un brillo celeste dentro.
     vec3 R = reflect(-V, n);
     vec3 T = refract(-V, n, 0.72);
     float F = 0.04 + 0.96 * fres;
-    vec3 reflejo = entorno(R);
-    vec3 dentro = entorno(T) * vec3(0.55, 0.85, 1.0) * 0.55 + CELESTE * (0.18 + 0.5 * pow(1.0 - cosV, 2.0));
+    vec3 reflejo = entorno(R, 1.0);
+    vec3 dentro = entorno(T, 1.0) * vec3(0.55, 0.85, 1.0) * 0.55 + CELESTE * (0.18 + 0.5 * pow(1.0 - cosV, 2.0));
     float esp = pow(max(dot(n, normalize(L + V)), 0.0), 160.0);
     // La luz que atraviesa el cristal se concentra en el lado opuesto, y el borde brilla.
     float atraviesa = pow(max(dot(n, -L), 0.0), 5.0);

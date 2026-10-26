@@ -4,13 +4,12 @@ import type { ComponentProps, ReactNode } from 'react';
 type Variante = 'principal' | 'texto';
 
 const VARIANTES: Record<Variante, string> = {
-  principal:
-    'min-h-14 rounded-boton bg-marino px-6 font-medium text-white transition-colors duration-150 ' +
-    'hover:bg-marino-hover active:translate-y-px disabled:cursor-not-allowed disabled:opacity-70',
+  // El botón de luz de globals.css: el mismo en toda la web.
+  principal: 'boton-luz min-h-14 px-6',
   // Acción secundaria: un enlace, no un segundo botón que compita con el principal.
   texto:
-    'min-h-12 px-1 font-medium text-marino underline decoration-gris-azulado decoration-1 underline-offset-[6px] ' +
-    'transition-colors duration-150 hover:decoration-marino',
+    'min-h-12 px-1 font-medium text-tinta underline decoration-white/35 decoration-1 underline-offset-[6px] ' +
+    'transition-colors duration-150 hover:decoration-celeste',
 };
 
 export function getClasesBoton(variante: Variante = 'principal') {

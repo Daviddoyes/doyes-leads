@@ -105,11 +105,19 @@ export function EscenaOrbita() {
     let escena: Escena | null = null;
 
     // Los nombres siguen a las esferas en cada fotograma, sin pasar por React. Para
-    // que no ensucien: si dos chocan, solo el de la esfera más cercana; y en móvil,
-    // nunca en la mitad de abajo, donde va el texto.
+    // que no ensucien: si dos chocan, solo el de la esfera más cercana, y ninguno
+    // toca nunca el texto de la portada (titular, línea y botón).
+    const contenedor = canvasRef.current?.parentElement;
     const colocarNombres = (nombres: PosicionNombre[]) => {
-      const ocupados: { x0: number; x1: number; y0: number; y1: number }[] = [];
-      const limite = equipo.movil ? window.innerHeight * 0.46 : Infinity;
+      const origen = contenedor?.getBoundingClientRect();
+      const margen = 14;
+      const ocupados: { x0: number; x1: number; y0: number; y1: number }[] = origen
+        ? Array.from(document.querySelectorAll('[data-zona-texto]')).map((pieza) => {
+            const t = pieza.getBoundingClientRect();
+            return { x0: t.left - origen.left - margen, x1: t.right - origen.left + margen, y0: t.top - origen.top - margen, y1: t.bottom - origen.top + margen };
+          })
+        : [];
+      const limite = Infinity;
       nombres
         .map((n, i) => ({ n, i }))
         .sort((a, b) => a.n.profundidad - b.n.profundidad)

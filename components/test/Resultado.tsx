@@ -6,10 +6,11 @@ import { EnlaceBoton } from '@/components/Boton';
 import { URL_RESERVA } from '@/lib/marca';
 import { TEXTO_RESERVA, type ColorTest, type ResultadoTest } from '@/lib/test-ia360';
 
-const COLORES: Record<ColorTest, { fondo: string; texto: string }> = {
-  verde: { fondo: 'bg-exito', texto: 'text-exito' },
-  ambar: { fondo: 'bg-aviso', texto: 'text-aviso' },
-  rojo: { fondo: 'bg-peligro', texto: 'text-peligro' },
+// Cada color con su brillo suave: la luz del semáforo sobre la noche.
+const COLORES: Record<ColorTest, { fondo: string; texto: string; brillo: string }> = {
+  verde: { fondo: 'bg-exito', texto: 'text-exito', brillo: 'shadow-[0_0_14px_1px_rgba(79,211,148,0.55)]' },
+  ambar: { fondo: 'bg-aviso', texto: 'text-aviso', brillo: 'shadow-[0_0_14px_1px_rgba(246,189,84,0.55)]' },
+  rojo: { fondo: 'bg-peligro', texto: 'text-peligro', brillo: 'shadow-[0_0_14px_1px_rgba(255,138,120,0.55)]' },
 };
 const NOMBRES: Record<ColorTest, string> = { verde: 'Verde', ambar: 'Ámbar', rojo: 'Rojo' };
 const ORDEN_SEMAFORO: ColorTest[] = ['verde', 'ambar', 'rojo'];
@@ -56,7 +57,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         <p className="text-detalle text-tinta-tenue">Tu resultado</p>
         <div className="mt-3 flex items-end justify-between gap-6">
           <p className="flex items-baseline gap-3">
-            <span className="font-titulos text-display font-semibold tabular-nums text-marino" aria-hidden="true">
+            <span className="font-titulos text-display font-extrabold tabular-nums text-tinta" aria-hidden="true">
               {valor}
             </span>
             <span className="sr-only">{resultado.puntos}</span>
@@ -65,19 +66,19 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
           {/* Semáforo: tres tramos, el que toca encendido. */}
           <div aria-hidden="true" className="mb-3 flex gap-1">
             {ORDEN_SEMAFORO.map((c) => (
-              <span key={c} className={`h-1.5 w-7 rounded-full ${c === resultado.color ? COLORES[c].fondo : 'bg-linea'}`} />
+              <span key={c} className={`h-1.5 w-7 rounded-full ${c === resultado.color ? `${COLORES[c].fondo} ${COLORES[c].brillo}` : 'bg-white/10'}`} />
             ))}
           </div>
         </div>
         <p className={`mt-4 text-detalle font-medium ${colores.texto}`}>{resultado.nombreColor}</p>
-        <h2 ref={ref} id="resultado-titulo" tabIndex={-1} className="mt-1 text-titulo text-marino outline-none">
+        <h2 ref={ref} id="resultado-titulo" tabIndex={-1} className="mt-1 text-titulo text-tinta outline-none">
           {resultado.titular}
         </h2>
         <p className="mt-4 max-w-lectura text-tinta-suave">{resultado.mensaje}</p>
       </section>
 
-      <section aria-labelledby="bloques-titulo" className="mt-12 border-t border-linea pt-10">
-        <h2 id="bloques-titulo" className="text-subtitulo text-marino">
+      <section aria-labelledby="bloques-titulo" className="mt-12 border-t border-white/10 pt-10">
+        <h2 id="bloques-titulo" className="text-subtitulo text-tinta">
           Tu empresa, por bloques
         </h2>
         <p className="mt-1 text-detalle text-tinta-tenue">Cuantos más puntos, más tiempo hay por recuperar.</p>
@@ -88,14 +89,14 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
             return (
               <li key={b.clave}>
                 <div className="flex items-baseline justify-between gap-4 text-detalle">
-                  <span className="font-medium text-marino">{b.nombre}</span>
+                  <span className="font-medium text-tinta">{b.nombre}</span>
                   <span className={`shrink-0 tabular-nums ${c.texto}`}>
                     {NOMBRES[b.color]}, {b.puntos} de {b.maximo}
                   </span>
                 </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-linea" aria-hidden="true">
+                <div className="mt-2 h-1.5 rounded-full bg-white/10" aria-hidden="true">
                   <div
-                    className={`h-full rounded-full ${c.fondo} transition-[width] duration-700 ease-out`}
+                    className={`h-full rounded-full ${c.fondo} ${c.brillo} transition-[width] duration-700 ease-out`}
                     style={{ width: lleno ? `${Math.max(porcentaje, 3)}%` : '0%', transitionDelay: `${i * 70}ms` }}
                   />
                 </div>
@@ -106,14 +107,14 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
       </section>
 
       {resultado.destacados.length > 0 && (
-        <section aria-labelledby="destacados-titulo" className="mt-12 border-t border-linea pt-10">
-          <h2 id="destacados-titulo" className="text-subtitulo text-marino">
+        <section aria-labelledby="destacados-titulo" className="mt-12 border-t border-white/10 pt-10">
+          <h2 id="destacados-titulo" className="text-subtitulo text-tinta">
             Dónde mirar primero
           </h2>
           <div className="mt-6 space-y-6">
             {resultado.destacados.map((d) => (
               <article key={d.clave}>
-                <h3 className="text-detalle font-medium text-marino">{d.nombre}</h3>
+                <h3 className="text-detalle font-medium text-tinta">{d.nombre}</h3>
                 <p className="mt-1 max-w-lectura text-tinta">{d.frase}</p>
               </article>
             ))}
@@ -121,10 +122,10 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         </section>
       )}
 
-      <section aria-labelledby="siguiente-titulo" className="mt-12 border-t border-linea pt-10">
+      <section aria-labelledby="siguiente-titulo" className="mt-12 border-t border-white/10 pt-10">
         {resultado.llamada.mostrar ? (
           <>
-            <h2 id="siguiente-titulo" className="text-subtitulo text-marino">
+            <h2 id="siguiente-titulo" className="text-subtitulo text-tinta">
               El siguiente paso
             </h2>
             <p className="mt-2 max-w-lectura text-tinta-suave">
@@ -137,12 +138,12 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
               </EnlaceBoton>
             ) : (
               // Texto propio y no el del portal: la web habla siempre en plural.
-              <p className="mt-6 font-medium text-marino">Responde al correo con tu resultado y te llamamos.</p>
+              <p className="mt-6 font-medium text-tinta">Responde al correo con tu resultado y te llamamos.</p>
             )}
           </>
         ) : (
           <>
-            <h2 id="siguiente-titulo" className="text-subtitulo text-marino">
+            <h2 id="siguiente-titulo" className="text-subtitulo text-tinta">
               {resultado.llamada.texto}
             </h2>
             <p className="mt-2 max-w-lectura text-tinta-suave">
@@ -152,7 +153,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         )}
       </section>
 
-      <p className="mt-12 border-t border-linea pt-6">
+      <p className="mt-12 border-t border-white/10 pt-6">
         <EnlaceBoton href="/" variante="texto">
           Volver a la portada
         </EnlaceBoton>

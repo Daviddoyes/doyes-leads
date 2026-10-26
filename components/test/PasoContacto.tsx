@@ -28,8 +28,8 @@ interface PasoContactoProps {
 }
 
 const CLASES_CAMPO =
-  'mt-2 block min-h-14 w-full rounded-boton border bg-superficie px-4 py-3 text-texto text-tinta ' +
-  'transition-colors duration-150 focus:border-marino focus:outline-none';
+  'mt-2 block min-h-14 w-full rounded-xl border bg-white/[0.04] px-4 py-3 text-texto text-tinta placeholder:text-tinta-tenue ' +
+  'transition-all duration-200 focus:border-celeste focus:bg-white/[0.06] focus:outline-none';
 
 function MensajeError({ id, texto }: { id: string; texto?: string }) {
   if (!texto) return null;
@@ -57,7 +57,7 @@ function CampoTexto({ campo, etiqueta, opcional, type = 'text', autoComplete, in
   const idError = `error-${campo}`;
   return (
     <div>
-      <label htmlFor={`campo-${campo}`} className="text-detalle font-medium text-marino">
+      <label htmlFor={`campo-${campo}`} className="text-detalle font-medium text-tinta">
         {etiqueta}
         {opcional && <span className="font-normal text-tinta-tenue"> (opcional)</span>}
       </label>
@@ -95,17 +95,17 @@ function GrupoOpciones<T extends string>({ campo, etiqueta, opciones, valor, err
   const idError = `error-${campo}`;
   return (
     <fieldset id={`campo-${campo}`} tabIndex={-1} aria-describedby={error ? idError : undefined} className="outline-none">
-      <legend className="text-detalle font-medium text-marino">{etiqueta}</legend>
+      <legend className="text-detalle font-medium text-tinta">{etiqueta}</legend>
       <div className={`mt-2 grid gap-2 ${columnas}`}>
         {opciones.map((o) => {
           const elegida = valor === o.clave;
           return (
             <label
               key={o.clave}
-              className={`flex min-h-14 cursor-pointer items-center justify-center rounded-boton border px-3 py-2 text-center text-detalle font-medium transition-colors duration-150 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-celeste ${
+              className={`flex min-h-14 cursor-pointer items-center justify-center rounded-xl border px-3 py-2 text-center text-detalle font-medium transition-all duration-200 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-celeste ${
                 elegida
-                  ? 'border-marino bg-marino text-white'
-                  : `bg-superficie text-tinta hover:border-marino ${error ? 'border-peligro' : 'border-borde-campo'}`
+                  ? 'border-celeste bg-celeste/15 text-white shadow-[0_0_28px_-6px_rgba(21,168,245,0.75),inset_0_0_0_1px_rgba(21,168,245,0.6)]'
+                  : `bg-white/[0.035] text-tinta hover:border-celeste/50 hover:bg-white/[0.06] ${error ? 'border-peligro' : 'border-white/10'}`
               }`}
             >
               <input type="radio" name={campo} value={o.clave} checked={elegida} onChange={() => onCambio(o.clave)} className="sr-only" />
@@ -169,7 +169,7 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
 
   return (
     <form noValidate onSubmit={enviar} className="relative">
-      <h2 ref={tituloRef} tabIndex={-1} className="text-pregunta text-marino outline-none">
+      <h2 ref={tituloRef} tabIndex={-1} className="text-pregunta text-tinta outline-none">
         ¿Dónde te enviamos tu resultado?
       </h2>
       <p className="mt-3 max-w-lectura text-tinta-suave">Lo verás aquí mismo al momento y te llegará también por correo.</p>
@@ -220,7 +220,7 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
               }}
               aria-invalid={Boolean(getError('privacidad'))}
               aria-describedby={getError('privacidad') ? 'error-privacidad' : undefined}
-              className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-marino"
+              className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-celeste"
             />
             <span>
               He leído y acepto la{' '}

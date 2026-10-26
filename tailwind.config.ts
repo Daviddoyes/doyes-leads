@@ -18,9 +18,10 @@ const config: Config = {
       detalle: ['var(--tam-detalle)', { lineHeight: '1.5' }],
       texto: ['var(--tam-texto)', { lineHeight: '1.6' }],
       subtitulo: ['var(--tam-subtitulo)', { lineHeight: '1.3' }],
-      pregunta: ['var(--tam-pregunta)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
-      titulo: ['var(--tam-titulo)', { lineHeight: '1.12', letterSpacing: '-0.02em' }],
-      display: ['var(--tam-display)', { lineHeight: '1.02', letterSpacing: '-0.03em' }],
+      pregunta: ['var(--tam-pregunta)', { lineHeight: '1.04', letterSpacing: '0.005em' }],
+      seccion: ['var(--tam-seccion)', { lineHeight: '0.92', letterSpacing: '0.005em' }],
+      titulo: ['var(--tam-titulo)', { lineHeight: '1.02', letterSpacing: '0.005em' }],
+      display: ['var(--tam-display)', { lineHeight: '0.95', letterSpacing: '0' }],
       portada: ['var(--tam-portada)', { lineHeight: '0.94', letterSpacing: '-0.045em' }],
     },
     extend: {
@@ -29,6 +30,7 @@ const config: Config = {
         celeste: color('celeste'),
         'gris-azulado': color('gris-azulado'),
         fondo: color('fondo'),
+        noche: color('noche'),
         superficie: color('superficie'),
         tinta: { DEFAULT: color('tinta'), suave: color('tinta-suave'), tenue: color('tinta-tenue') },
         linea: color('linea'),
@@ -40,7 +42,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        titulos: ['var(--font-poppins)', 'var(--font-inter)', 'ui-sans-serif', 'sans-serif'],
+        titulos: ['var(--font-display)', 'var(--font-inter)', 'ui-sans-serif', 'sans-serif'],
       },
       maxWidth: {
         lectura: '62ch',

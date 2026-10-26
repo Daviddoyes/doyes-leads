@@ -10,7 +10,7 @@ const LEGALES = [
   { href: '/cookies', texto: 'Cookies' },
 ];
 
-const ENLACE = 'underline-offset-4 transition-colors duration-150 hover:text-marino hover:underline';
+const ENLACE = 'underline-offset-4 transition-colors duration-150 hover:text-tinta hover:underline';
 
 interface PieProps {
   /** Sin cabecera (/v1, /v2), "Contacto" va aquí. */
@@ -20,10 +20,11 @@ interface PieProps {
 export function Pie({ conContacto = false }: PieProps) {
   const contactoExterno = URL_CONTACTO.startsWith('http');
   return (
-    <footer className="px-5 sm:px-8 lg:px-16">
-      <div className="mx-auto grid max-w-[90rem] gap-8 border-t border-linea py-12 text-detalle text-tinta-tenue lg:grid-cols-12 lg:py-16">
+    <footer className="bg-noche px-5 sm:px-8 lg:px-16">
+      <div aria-hidden="true" className="linea-luz mx-auto max-w-[90rem]" />
+      <div className="mx-auto grid max-w-[90rem] gap-8 py-12 text-detalle text-tinta-tenue lg:grid-cols-12 lg:py-16">
         <address className="not-italic lg:col-span-4">
-          <p className="font-medium text-marino">{DATOS_EMPRESA.nombreCorto}</p>
+          <p className="font-medium text-tinta">{DATOS_EMPRESA.nombreCorto}</p>
           <p>{DATOS_EMPRESA.cif}</p>
           <p>{DATOS_EMPRESA.direccionComercial}</p>
         </address>
@@ -32,7 +33,7 @@ export function Pie({ conContacto = false }: PieProps) {
             <p className="mb-2">
               <a
                 href={URL_CONTACTO}
-                className="font-medium text-marino underline decoration-gris-azulado underline-offset-4 transition-colors duration-150 hover:decoration-marino"
+                className="font-medium text-tinta underline decoration-white/35 underline-offset-4 transition-colors duration-150 hover:decoration-celeste"
                 {...(contactoExterno && { target: '_blank', rel: 'noopener noreferrer' })}
               >
                 Contacto
