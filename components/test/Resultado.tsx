@@ -128,15 +128,16 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
               El siguiente paso
             </h2>
             <p className="mt-2 max-w-lectura text-tinta-suave">
-              En 30 minutos vemos tu resultado juntos y te digo por dónde empezaría. Además, te hemos enviado el resultado
-              por correo.
+              En 30 minutos vemos tu resultado juntos y te decimos por dónde empezaríamos. Además, te hemos enviado el
+              resultado por correo.
             </p>
             {urlReserva ? (
               <EnlaceBoton href={urlReserva} className="mt-8 w-full">
                 {TEXTO_RESERVA}
               </EnlaceBoton>
             ) : (
-              <p className="mt-6 font-medium text-marino">{resultado.llamada.texto}</p>
+              // Texto propio y no el del portal: la web habla siempre en plural.
+              <p className="mt-6 font-medium text-marino">Responde al correo con tu resultado y te llamamos.</p>
             )}
           </>
         ) : (
