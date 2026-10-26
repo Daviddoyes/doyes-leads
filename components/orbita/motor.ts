@@ -133,15 +133,15 @@ const aVista = (m: Mat4, p: Vec3): Vec3 => [
 ];
 
 /**
- * Encuadre según la pantalla: en móvil (vertical) la escena sube y las órbitas
- * llegan a los bordes; en escritorio, algo por encima del centro, a lo grande.
+ * Encuadre según la pantalla: en móvil (vertical) el centro va a la altura que pide la
+ * portada y las órbitas llegan a los bordes; en escritorio, algo por encima del centro.
  */
 function getEncuadre(ancho: number, alto: number, centroVertical: number) {
   const aspecto = ancho / Math.max(alto, 1);
   const vertical = aspecto < 0.9;
   const t = Math.tan(CAMPO_VISION / 2);
-  // En móvil, las órbitas de fuera rozan los lados: grande, como un plano de cine, sin salirse del todo.
-  const ocupar = vertical ? 0.8 : 1.05;
+  // En móvil hace de fondo a pantalla completa: las órbitas de fuera se salen por los lados.
+  const ocupar = vertical ? 0.62 : 1.05;
   const distancia = Math.max(vertical ? 9 : 9.2, (ORBITAS[2].radio * ocupar) / (t * aspecto));
   // En apaisado, el texto va abajo a la izquierda: la escena sube y se aparta un poco a la derecha.
   // En vertical, el centro va a la altura pedida (fracción desde arriba); subir va de -1 a 1.

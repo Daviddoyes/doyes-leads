@@ -110,7 +110,8 @@ function EscenaDibujada() {
   );
 }
 
-export function EscenaOrbita() {
+/** `className`: para atenuarla cuando hace de fondo (p. ej. más tenue en móvil). */
+export function EscenaOrbita({ className = '' }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nombresRef = useRef<(HTMLLIElement | null)[]>([]);
   const [modo, setModo] = useState<Modo>('esperando');
@@ -152,14 +153,18 @@ export function EscenaOrbita() {
         });
     };
 
-    // En vertical, la escena se centra en el hueco que deja el texto por encima.
+    // En vertical, el centro de la escena va detrás de la pieza marcada con data-centro-escena
+    // (en la portada, el bloque de texto: la escena hace de fondo). Sin ella, en el hueco que
+    // deja el texto por encima.
     const centroVertical = () => {
       const alto = contenedor?.clientHeight || window.innerHeight;
+      const origen = contenedor?.getBoundingClientRect().top ?? 0;
+      const centro = document.querySelector('[data-centro-escena]')?.getBoundingClientRect();
+      if (centro) return Math.min(Math.max((centro.top + centro.height / 2 - origen) / alto, 0.2), 0.8);
       const piezas = Array.from(document.querySelectorAll('[data-zona-texto]'));
       const arriba = Math.min(...piezas.map((pieza) => pieza.getBoundingClientRect().top));
-      const origen = contenedor?.getBoundingClientRect().top ?? 0;
       const hueco = Number.isFinite(arriba) ? arriba - origen : alto * 0.6;
-      return Math.min(Math.max(hueco / 2 / alto, 0.2), 0.4);
+      return Math.min(Math.max(hueco / 2 / alto, 0.15), 0.4);
     };
 
     async function cargar() {
@@ -201,7 +206,7 @@ export function EscenaOrbita() {
     <div
       role="img"
       aria-label="Una esfera central con el símbolo de Doyes Digital y, a su alrededor, seis esferas de cristal (marketing, ventas, compras, operaciones, calidad y administración) que, desordenadas al principio, encajan en tres órbitas de luz y giran juntas."
-      className="absolute inset-0 -z-10 select-none"
+      className={`absolute inset-0 -z-10 select-none ${className}`}
       style={{ background: FONDO_NOCHE }}
     >
       {modo === 'sin-webgl' ? (
