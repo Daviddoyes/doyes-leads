@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Sofia_Sans_Extra_Condensed } from 'next/font/google';
 
+import { BotonWhatsApp } from '@/components/BotonWhatsApp';
 import { CapturaOrigen } from '@/components/CapturaOrigen';
 import { URL_SITIO } from '@/lib/marca';
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-dvh flex-col font-sans">
         <CapturaOrigen />
         {children}
+        <BotonWhatsApp />
       </body>
     </html>
   );

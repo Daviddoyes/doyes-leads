@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { DATOS_EMPRESA, URL_CONTACTO } from '@/lib/marca';
+import { DATOS_EMPRESA, URL_CONTACTO, URL_WHATSAPP } from '@/lib/marca';
 
 import { AnoActual } from './AnoActual';
 
@@ -26,7 +26,6 @@ export function Pie({ conContacto = false }: PieProps) {
         <address className="not-italic lg:col-span-4">
           <p className="font-medium text-tinta">{DATOS_EMPRESA.nombreCorto}</p>
           <p>{DATOS_EMPRESA.cif}</p>
-          <p>{DATOS_EMPRESA.direccionComercial}</p>
         </address>
         <div className="lg:col-span-4">
           {conContacto && (
@@ -48,6 +47,11 @@ export function Pie({ conContacto = false }: PieProps) {
           <p>
             <a href={`tel:${DATOS_EMPRESA.telefonoEnlace}`} className={ENLACE}>
               {DATOS_EMPRESA.telefono}
+            </a>
+          </p>
+          <p>
+            <a href={URL_WHATSAPP} target="_blank" rel="noopener noreferrer" className={ENLACE}>
+              WhatsApp
             </a>
           </p>
         </div>

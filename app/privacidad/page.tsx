@@ -32,7 +32,7 @@ export default function Privacidad() {
           ['CIF', D.cif],
           ['Domicilio social', D.domicilioSocial],
           ['Email', email],
-          ['Teléfono', D.telefono],
+          ['Teléfono', <a key="tel" href={`tel:${D.telefonoEnlace}`}>{D.telefono}</a>],
         ]}
       />
 

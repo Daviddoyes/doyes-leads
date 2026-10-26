@@ -5,6 +5,7 @@ import {
   SeccionFinal,
   SeccionGanas,
   SeccionMetodo,
+  SeccionPartner,
   SeccionPreguntas,
   SeccionQueRecibes,
   SeccionTeSuena,
@@ -20,6 +21,7 @@ export function RestoPortada() {
       <SeccionComoTrabajamos />
       <SeccionQueRecibes />
       <SeccionPreguntas />
+      <SeccionPartner />
       <SeccionFinal conContacto />
     </>
   );

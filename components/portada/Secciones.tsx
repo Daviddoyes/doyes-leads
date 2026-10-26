@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 import { EnlaceBoton } from '@/components/Boton';
-import { DATOS_EMPRESA, URL_CONTACTO } from '@/lib/marca';
+import { DATOS_EMPRESA, URL_CONTACTO, URL_HABLEMOS, URL_WHATSAPP } from '@/lib/marca';
 
-import { BOTON_TEST, DOLORES, ENTREGABLES, GANAS, METODO, PASOS, PREGUNTAS } from './contenido';
+import { BOTON_TEST, DOLORES, ENTREGABLES, GANAS, METODO, PARTNER, PASOS, PREGUNTAS } from './contenido';
 import { LineaFases } from './LineaFases';
 
 // Las secciones de la portada, en el mundo nocturno de la primera pantalla:
@@ -45,10 +45,12 @@ interface SeccionProps {
   tono: Tono;
   /** Lo que va aquí ocupa las 12 columnas, debajo del título y el contenido. */
   anchoCompleto?: ReactNode;
+  /** Por defecto, el botón al test. */
+  boton?: ReactNode;
 }
 
 /** Sección editorial: título a la izquierda (4 columnas), contenido a la derecha (8) y el botón al test. */
-function Seccion({ id, titulo, children, tono, anchoCompleto }: SeccionProps) {
+function Seccion({ id, titulo, children, tono, anchoCompleto, boton = <BotonTest /> }: SeccionProps) {
   return (
     <section id={id} aria-labelledby={`${id}-titulo`} className={`${MARGENES} ${TONOS[tono]}`}>
       <div className={CONTENEDOR}>
@@ -59,9 +61,7 @@ function Seccion({ id, titulo, children, tono, anchoCompleto }: SeccionProps) {
           </h2>
           <div className="lg:col-span-8">{children}</div>
           {anchoCompleto && <div className="lg:col-span-12">{anchoCompleto}</div>}
-          <div className="lg:col-span-8 lg:col-start-5">
-            <BotonTest />
-          </div>
+          <div className="lg:col-span-8 lg:col-start-5">{boton}</div>
         </div>
       </div>
     </section>
@@ -139,7 +139,18 @@ export function SeccionComoTrabajamos() {
               <th scope="row" className="text-subtitulo font-semibold text-tinta lg:py-7 lg:pr-6 lg:align-top">
                 {p.nombre}
               </th>
-              <td className="col-span-2 row-start-2 max-w-[44ch] text-tinta-suave lg:py-7 lg:pr-6 lg:align-top">{p.texto}</td>
+              <td className="col-span-2 row-start-2 max-w-[44ch] text-tinta-suave lg:py-7 lg:pr-6 lg:align-top">
+                {p.texto}
+                {p.enlace && (
+                  <a
+                    href={p.enlace.href}
+                    className="mt-1 flex min-h-11 w-fit items-center gap-1.5 font-medium text-[#9fdcff] underline decoration-[#9fdcff]/40 underline-offset-4 transition-colors duration-150 hover:decoration-[#9fdcff]"
+                  >
+                    {p.enlace.texto}
+                    <span aria-hidden="true">↓</span>
+                  </a>
+                )}
+              </td>
               <td className="col-start-2 row-start-1 whitespace-nowrap text-right font-medium text-[#9fdcff] lg:py-7 lg:align-top">
                 {p.precio}
               </td>
@@ -187,7 +198,36 @@ export function SeccionPreguntas() {
   );
 }
 
-/** En la portada (sin cabecera), "Contacto" va también aquí, junto al botón, con la dirección comercial. */
+/** Después del roadmap: lo que hacemos a continuación, con un botón para hablar en lugar del test. */
+export function SeccionPartner() {
+  return (
+    <Seccion
+      id="partner"
+      tono="azul"
+      titulo={PARTNER.titulo}
+      boton={
+        <EnlaceBoton href={URL_HABLEMOS} className="w-full sm:w-auto sm:px-10">
+          {PARTNER.boton}
+        </EnlaceBoton>
+      }
+    >
+      <p className="max-w-[40ch] text-subtitulo text-tinta-suave">{PARTNER.entradilla}</p>
+      <ul className="mt-10">
+        {PARTNER.servicios.map((s) => (
+          <li key={s.nombre} className="py-6 last:pb-0">
+            <div aria-hidden="true" className="linea-luz mb-6 opacity-70" />
+            <div className="grid gap-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-8">
+              <h3 className="text-subtitulo text-tinta">{s.nombre}</h3>
+              <p className="max-w-lectura text-tinta-suave">{s.texto}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Seccion>
+  );
+}
+
+/** En la portada (sin cabecera), "Contacto" y WhatsApp van también aquí, junto al botón. */
 export function SeccionFinal({ conContacto = false }: { conContacto?: boolean }) {
   return (
     <section aria-labelledby="final-titulo" className={`${MARGENES} ${TONOS.profundo}`}>
@@ -201,14 +241,19 @@ export function SeccionFinal({ conContacto = false }: { conContacto?: boolean })
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
             <BotonTest />
             {conContacto && (
-              <EnlaceBoton href={URL_CONTACTO} variante="texto">
-                Contacto
-              </EnlaceBoton>
+              <div className="flex gap-8">
+                <EnlaceBoton href={URL_CONTACTO} variante="texto">
+                  Contacto
+                </EnlaceBoton>
+                <EnlaceBoton href={URL_WHATSAPP} variante="texto">
+                  WhatsApp
+                </EnlaceBoton>
+              </div>
             )}
           </div>
           {conContacto && (
             <address className="mt-8 text-detalle not-italic text-tinta-tenue">
-              {DATOS_EMPRESA.nombreCorto} · {DATOS_EMPRESA.direccionComercial} ·{' '}
+              {DATOS_EMPRESA.nombreCorto} ·{' '}
               <a href={`tel:${DATOS_EMPRESA.telefonoEnlace}`} className="underline-offset-4 hover:text-tinta hover:underline">
                 {DATOS_EMPRESA.telefono}
               </a>

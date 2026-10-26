@@ -34,11 +34,36 @@ export const METODO = {
   ],
 };
 
-export const PASOS = [
+export const PASOS: { nombre: string; texto: string; precio: string; enlace?: { href: string; texto: string } }[] = [
   { nombre: 'Test IA360', texto: '10 preguntas y una llamada de 30 minutos.', precio: 'Gratis' },
   { nombre: 'Diagnóstico IA360Empresas', texto: 'Mapa, oportunidades, seguridad y roadmap. De 7 a 30 días.', precio: 'Desde 3.000 € + IVA' },
-  { nombre: 'Implementación IA360Empresas', texto: 'Lo que valide el roadmap, con quien elijas.', precio: 'Presupuesto aparte' },
+  {
+    nombre: 'Implementación IA360Empresas',
+    texto: 'Lo que valide el roadmap, con quien elijas.',
+    precio: 'Presupuesto aparte',
+    enlace: { href: '#partner', texto: 'Cómo te acompañamos' },
+  },
 ];
+
+export const PARTNER = {
+  titulo: 'Tu partner tecnológico',
+  entradilla: 'El roadmap es el principio. Te acompañamos en lo que venga después.',
+  servicios: [
+    {
+      nombre: 'Implementación',
+      texto: 'Aplicaciones, integraciones y automatizaciones que valida el roadmap. Con nosotros, con tu equipo o con quien elijas.',
+    },
+    {
+      nombre: 'IA para CEOs y directivos',
+      texto: 'Programas 1 a 1 a medida: aprende a usar la IA y a decidir con criterio, con seguimiento si lo necesitas.',
+    },
+    {
+      nombre: 'Herramientas para dirección',
+      texto: 'Cuadros de mando, asistentes de IA e informes automáticos hechos para quien dirige.',
+    },
+  ],
+  boton: 'Hablemos',
+};
 
 export const ENTREGABLES = [
   { titulo: 'Un mapa de tu empresa hoy', texto: 'Dónde se pierde tiempo y se desordena el trabajo.' },
