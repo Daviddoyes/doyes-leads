@@ -27,7 +27,7 @@ export default function AvisoLegal() {
         filas={[
           ['Titular', D.razonSocial],
           ['CIF', D.cif],
-          ['Domicilio', D.direccion],
+          ['Domicilio social', D.domicilioSocial],
           ['Email', <a key="email" href={`mailto:${D.email}`}>{D.email}</a>],
           ['Teléfono', <a key="tel" href={`tel:${D.telefonoEnlace}`}>{D.telefono}</a>],
         ]}

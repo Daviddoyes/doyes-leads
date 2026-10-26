@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { EnlaceBoton } from '@/components/Boton';
-import { URL_CONTACTO } from '@/lib/marca';
+import { DATOS_EMPRESA, URL_CONTACTO } from '@/lib/marca';
 
 import { BOTON_TEST, DOLORES, ENTREGABLES, GANAS, METODO, PASOS, PREGUNTAS } from './contenido';
 
@@ -189,7 +189,7 @@ export function SeccionPreguntas() {
   );
 }
 
-/** Sin cabecera (/v1, /v2), "Contacto" va también aquí, junto al botón. */
+/** Sin cabecera (/v1, /v2, /v3), "Contacto" va también aquí, junto al botón, con la dirección comercial. */
 export function SeccionFinal({ conContacto = false }: { conContacto?: boolean }) {
   return (
     <section aria-labelledby="final-titulo" className={MARGENES}>
@@ -206,6 +206,14 @@ export function SeccionFinal({ conContacto = false }: { conContacto?: boolean })
             </EnlaceBoton>
           )}
         </div>
+        {conContacto && (
+          <address className="mt-8 text-detalle not-italic text-tinta-tenue">
+            {DATOS_EMPRESA.nombreCorto} · {DATOS_EMPRESA.direccionComercial} ·{' '}
+            <a href={`tel:${DATOS_EMPRESA.telefonoEnlace}`} className="underline-offset-4 hover:text-marino hover:underline">
+              {DATOS_EMPRESA.telefono}
+            </a>
+          </address>
+        )}
       </div>
     </section>
   );

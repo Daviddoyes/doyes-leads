@@ -25,7 +25,7 @@ export function Pie({ conContacto = false }: PieProps) {
         <address className="not-italic lg:col-span-4">
           <p className="font-medium text-marino">{DATOS_EMPRESA.nombreCorto}</p>
           <p>{DATOS_EMPRESA.cif}</p>
-          <p>{DATOS_EMPRESA.direccionCorta}</p>
+          <p>{DATOS_EMPRESA.direccionComercial}</p>
         </address>
         <div className="lg:col-span-4">
           {conContacto && (

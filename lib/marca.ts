@@ -10,8 +10,10 @@ export const DATOS_EMPRESA = {
   razonSocial: 'Doyes Digital, S.L.',
   nombreCorto: 'Doyes Digital SL',
   cif: 'B25988031',
-  direccion: 'Carrer Nou 28, 43330 Riudoms (Tarragona)',
-  direccionCorta: 'Carrer Nou 28, 43330 Riudoms',
+  /** Domicilio social (fiscal): aviso legal y privacidad. */
+  domicilioSocial: 'C/ Nou 28, 43330 Riudoms (Tarragona)',
+  /** Dirección comercial: pie y contacto. */
+  direccionComercial: 'C/ de la Sardana, 2, 43330 Riudoms',
   email: 'hola@doyesdigital.com',
   telefono: '628 695 904',
   telefonoEnlace: '+34628695904',

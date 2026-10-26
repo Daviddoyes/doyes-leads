@@ -30,7 +30,7 @@ export default function Privacidad() {
         filas={[
           ['Responsable', D.razonSocial],
           ['CIF', D.cif],
-          ['Domicilio', D.direccion],
+          ['Domicilio social', D.domicilioSocial],
           ['Email', email],
           ['Teléfono', D.telefono],
         ]}
@@ -144,7 +144,7 @@ export default function Privacidad() {
         </li>
       </ul>
       <p>
-        Para ejercerlos, escríbenos a {email} desde el email con el que hiciste el test, o por correo postal a {D.direccion},
+        Para ejercerlos, escríbenos a {email} desde el email con el que hiciste el test, o por correo postal a {D.domicilioSocial},
         indicando qué derecho quieres ejercer. Te responderemos en un mes como máximo. Si podemos tener dudas razonables
         sobre tu identidad, te pediremos que la acredites.
       </p>
