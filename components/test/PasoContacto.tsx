@@ -43,7 +43,6 @@ function MensajeError({ id, texto }: { id: string; texto?: string }) {
 interface CampoTextoProps {
   campo: Exclude<keyof DatosContacto, 'personas' | 'cuando'>;
   etiqueta: string;
-  opcional?: boolean;
   type?: string;
   autoComplete: string;
   inputMode?: 'email' | 'tel' | 'text';
@@ -53,13 +52,12 @@ interface CampoTextoProps {
   onSalir: () => void;
 }
 
-function CampoTexto({ campo, etiqueta, opcional, type = 'text', autoComplete, inputMode, valor, error, onCambio, onSalir }: CampoTextoProps) {
+function CampoTexto({ campo, etiqueta, type = 'text', autoComplete, inputMode, valor, error, onCambio, onSalir }: CampoTextoProps) {
   const idError = `error-${campo}`;
   return (
     <div>
       <label htmlFor={`campo-${campo}`} className="text-detalle font-medium text-tinta">
         {etiqueta}
-        {opcional && <span className="font-normal text-tinta-tenue"> (opcional)</span>}
       </label>
       <input
         id={`campo-${campo}`}
@@ -72,7 +70,7 @@ function CampoTexto({ campo, etiqueta, opcional, type = 'text', autoComplete, in
         onBlur={onSalir}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? idError : undefined}
-        aria-required={!opcional}
+        aria-required
         className={`${CLASES_CAMPO} ${error ? 'border-peligro' : 'border-borde-campo'}`}
       />
       <MensajeError id={idError} texto={error} />
@@ -189,7 +187,7 @@ export const PasoContacto = forwardRef<HTMLHeadingElement, PasoContactoProps>(fu
         />
         {texto('sector', 'Sector', 'off')}
         {texto('cargo', 'Cargo', 'organization-title')}
-        {texto('telefono', 'Teléfono', 'tel', { type: 'tel', inputMode: 'tel', opcional: true })}
+        {texto('telefono', 'Teléfono', 'tel', { type: 'tel', inputMode: 'tel' })}
         <GrupoOpciones
           campo="cuando"
           etiqueta="¿Cuándo te gustaría ponerle solución?"

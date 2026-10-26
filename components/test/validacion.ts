@@ -54,10 +54,11 @@ export function validarContacto(datos: DatosContacto, privacidad: boolean): Erro
     personas: datos.personas ? undefined : 'Elige cuántas personas sois.',
     sector: obligatorio(datos.sector, 120, 'Indica el sector de tu empresa.'),
     cargo: obligatorio(datos.cargo, 120, 'Indica tu cargo.'),
-    telefono:
-      datos.telefono.trim() && !esTelefonoValido(datos.telefono.trim())
-        ? 'Revisa el teléfono, o déjalo en blanco.'
-        : undefined,
+    telefono: !datos.telefono.trim()
+      ? 'Escribe tu teléfono.'
+      : esTelefonoValido(datos.telefono.trim())
+        ? undefined
+        : 'Revisa el teléfono: parece que falta algo.',
     cuando: datos.cuando ? undefined : 'Elige cuándo te gustaría ponerle solución.',
     privacidad: privacidad ? undefined : 'Para ver tu resultado, acepta la política de privacidad.',
   };

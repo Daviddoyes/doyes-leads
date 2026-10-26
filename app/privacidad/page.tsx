@@ -47,8 +47,8 @@ export default function Privacidad() {
           la pregunta abierta (qué te ha hecho buscar una mejora y qué te gustaría conseguir).
         </li>
         <li>
-          <strong>Tus datos de contacto</strong>: nombre, email, empresa, número de personas, sector, cargo, teléfono (si
-          lo das) y cuándo te gustaría ponerle solución.
+          <strong>Tus datos de contacto</strong>: nombre, email, empresa, número de personas, sector, cargo, teléfono y
+          cuándo te gustaría ponerle solución.
         </li>
         <li>
           <strong>El resultado</strong> que se calcula a partir de tus respuestas (puntos, semáforo y bloques).
