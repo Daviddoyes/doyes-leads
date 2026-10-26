@@ -91,7 +91,8 @@ export function SeccionGanas() {
       <div className={CONTENEDOR}>
         <div aria-hidden="true" className="linea-luz" />
         <div className="py-20 lg:py-28">
-          <h2 id="ganas-titulo" className={`max-w-[18ch] ${TITULO_SECCION}`}>
+          {/* Una frase larga: en Inter, grande y en minúsculas (la display, solo para titulares cortos). */}
+          <h2 id="ganas-titulo" className="max-w-[22ch] text-titulo text-tinta">
             {GANAS.titulo}
           </h2>
           <p className="mt-6 max-w-[40ch] text-subtitulo text-tinta-suave lg:mt-8">{GANAS.entradilla}</p>
@@ -186,7 +187,7 @@ export function SeccionPreguntas() {
   );
 }
 
-/** Sin cabecera (/v1, /v2, /v3), "Contacto" va también aquí, junto al botón, con la dirección comercial. */
+/** En la portada (sin cabecera), "Contacto" va también aquí, junto al botón, con la dirección comercial. */
 export function SeccionFinal({ conContacto = false }: { conContacto?: boolean }) {
   return (
     <section aria-labelledby="final-titulo" className={`${MARGENES} ${TONOS.profundo}`}>

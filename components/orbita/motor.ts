@@ -1,4 +1,4 @@
-// La escena de /v3: en el centro, la esfera con el símbolo dD; alrededor, los seis
+// La escena de la portada: en el centro, la esfera con el símbolo dD; alrededor, los seis
 // departamentos como esferas de cristal en tres órbitas inclinadas, con estelas de
 // luz celeste y partículas finas. Al cargar flotan desordenados y, en unos
 // segundos, encajan en sus órbitas y giran juntos sin parar.

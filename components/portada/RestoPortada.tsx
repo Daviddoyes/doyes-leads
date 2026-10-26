@@ -10,7 +10,7 @@ import {
   SeccionTeSuena,
 } from './Secciones';
 
-/** Lo que va debajo de la primera pantalla en /v1 y /v2: sin cabecera, "Contacto" va al final y al pie. */
+/** Lo que va debajo de la primera pantalla de la portada: sin cabecera, "Contacto" va al final y al pie. */
 export function RestoPortada() {
   return (
     <>

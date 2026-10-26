@@ -43,20 +43,26 @@
 
   /*
    * Escala tipográfica: de 375 px a ~1024 px crece sola, sin saltos.
-   *   portada    titular de la portada        display (Sofia Sans Extra Condensed) 800, mayúsculas
+   *
+   * Regla: la display estrecha (Sofia Sans Extra Condensed, clase font-titulos)
+   * solo en titulares cortos en mayúsculas: el de la portada y los títulos de
+   * sección. Todo lo demás, también las preguntas del test y los títulos largos
+   * o en minúsculas, en Inter seminegrita.
+   *
+   *   portada    titular de la portada        display 800, mayúsculas
    *   seccion    40 → 76   títulos de sección display 800, mayúsculas
-   *   display    40 → 76   cifra del resultado display 800
-   *   titulo     30 → 48   titulares          display 700
-   *   pregunta   30 → 48   pregunta del test   display 700
-   *   subtitulo  19 → 22   subtítulos          display 700
+   *   display    40 → 76   cifra del resultado Inter 700
+   *   titulo     28 → 44   titulares largos   Inter 600
+   *   pregunta   24 → 36   pregunta del test   Inter 600
+   *   subtitulo  19 → 22   subtítulos          Inter 600
    *   texto      17 → 18   texto               Inter 400
    *   detalle    14 → 15   pie, ayudas         Inter 400/500
    */
   --tam-portada: clamp(2.5rem, 0.9rem + 7.6vw, 6rem);
   --tam-seccion: clamp(2.5rem, 1.5rem + 4.4vw, 4.75rem);
   --tam-display: clamp(2.5rem, 1.2rem + 5.5vw, 4.75rem);
-  --tam-titulo: clamp(1.875rem, 1.2rem + 2.8vw, 3rem);
-  --tam-pregunta: clamp(1.875rem, 1.25rem + 2.6vw, 3rem);
+  --tam-titulo: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  --tam-pregunta: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
   --tam-subtitulo: clamp(1.1875rem, 1rem + 0.8vw, 1.375rem);
   --tam-texto: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);
   --tam-detalle: clamp(0.875rem, 0.83rem + 0.12vw, 0.9375rem);
@@ -79,27 +85,13 @@
     line-height: 1.6;
   }
 
+  /* Los títulos, en Inter seminegrita; la display solo donde se pide con font-titulos. */
   h1,
-  h2 {
-    font-family: var(--font-display), var(--font-inter), ui-sans-serif, sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.005em;
-    text-wrap: balance;
-  }
-
-  /* Los encabezados de tamaño subtítulo, también en Inter: son etiquetas, no titulares. */
-  h1.text-subtitulo,
-  h2.text-subtitulo {
-    font-family: var(--font-inter), ui-sans-serif, sans-serif;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-
-  /* Los subtítulos pequeños, en Inter: la display estrecha se lee peor a ese tamaño. */
+  h2,
   h3 {
     font-family: var(--font-inter), ui-sans-serif, sans-serif;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
     text-wrap: balance;
   }
 

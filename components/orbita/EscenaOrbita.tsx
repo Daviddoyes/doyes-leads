@@ -7,7 +7,7 @@ import simboloPng from '@/public/marca/simbolo.png';
 import type { Escena, PosicionNombre } from './motor';
 
 /*
- * Fondo de la primera pantalla de /v3. El degradado de CSS está desde el primer
+ * Fondo de la primera pantalla de la portada. El degradado de CSS está desde el primer
  * momento; la escena 3D (motor.ts) se descarga cuando el navegador queda libre y
  * aparece encima con un fundido. Con "reducir movimiento", un solo fotograma de
  * la escena ya ordenada. Sin WebGL2, el dibujo fijo de abajo.

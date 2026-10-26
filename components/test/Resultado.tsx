@@ -57,7 +57,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         <p className="text-detalle text-tinta-tenue">Tu resultado</p>
         <div className="mt-3 flex items-end justify-between gap-6">
           <p className="flex items-baseline gap-3">
-            <span className="font-titulos text-display font-extrabold tabular-nums text-tinta" aria-hidden="true">
+            <span className="text-display font-bold tabular-nums text-tinta" aria-hidden="true">
               {valor}
             </span>
             <span className="sr-only">{resultado.puntos}</span>

@@ -5,6 +5,7 @@
 /** El botón al test dice siempre lo mismo, en toda la web. */
 export const BOTON_TEST = 'Haz el test gratis';
 
+/** El titular de la portada, en mayúsculas y en dos frases. */
 export const TITULAR = ['Ordena tu empresa.', 'Poténciala con IA.'];
 /** Una línea; en el móvil se parte por la pregunta. */
 export const LINEA = ['¿Cómo está la tuya?', 'Descúbrelo en 3 minutos.'];

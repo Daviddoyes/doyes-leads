@@ -1,4 +1,4 @@
-// Dibujo de la escena de /v3 en WebGL2, sin librerías: fondo, esfera central con
+// Dibujo de la escena de la portada en WebGL2, sin librerías: fondo, esfera central con
 // el símbolo, esferas de cristal, órbitas y estelas de luz, partículas y bloom.
 //
 // Todo se pinta primero en una textura (con más rango que la pantalla si el

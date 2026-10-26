@@ -18,10 +18,10 @@ const config: Config = {
       detalle: ['var(--tam-detalle)', { lineHeight: '1.5' }],
       texto: ['var(--tam-texto)', { lineHeight: '1.6' }],
       subtitulo: ['var(--tam-subtitulo)', { lineHeight: '1.3' }],
-      pregunta: ['var(--tam-pregunta)', { lineHeight: '1.04', letterSpacing: '0.005em' }],
+      pregunta: ['var(--tam-pregunta)', { lineHeight: '1.25', letterSpacing: '-0.02em' }],
       seccion: ['var(--tam-seccion)', { lineHeight: '0.92', letterSpacing: '0.005em' }],
-      titulo: ['var(--tam-titulo)', { lineHeight: '1.02', letterSpacing: '0.005em' }],
-      display: ['var(--tam-display)', { lineHeight: '0.95', letterSpacing: '0' }],
+      titulo: ['var(--tam-titulo)', { lineHeight: '1.15', letterSpacing: '-0.025em' }],
+      display: ['var(--tam-display)', { lineHeight: '1', letterSpacing: '-0.035em' }],
       portada: ['var(--tam-portada)', { lineHeight: '0.94', letterSpacing: '-0.045em' }],
     },
     extend: {

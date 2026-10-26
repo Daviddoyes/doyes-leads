@@ -1,18 +1,15 @@
 import { EnlaceBoton } from '@/components/Boton';
-import { BOTON_TEST, LINEA } from '@/components/portada/contenido';
+import { BOTON_TEST, LINEA, TITULAR } from '@/components/portada/contenido';
 import { PieConContacto, RestoPortada } from '@/components/portada/RestoPortada';
 
 import { EscenaOrbita } from './EscenaOrbita';
 
-/** El titular de /v3, en mayúsculas y en dos frases. */
-const TITULAR = ['Ordena tu empresa.', 'Poténciala con IA.'];
-
 /**
- * Portada /v3: la primera pantalla entera es la escena, oscura, y encima solo el
+ * La portada: la primera pantalla entera es la escena, oscura, y encima solo el
  * titular, la línea y el botón, abajo a la izquierda (centrados en móvil). Sin
- * cabecera. Al bajar, la web sigue como la portada, en claro.
+ * cabecera. Al bajar, el resto de la web sigue en el mismo mundo nocturno.
  */
-export function PortadaOrbita({ claseFuente }: { claseFuente: string }) {
+export function PortadaOrbita() {
   return (
     <>
       <main id="contenido" className="flex-1">
@@ -28,7 +25,7 @@ export function PortadaOrbita({ claseFuente }: { claseFuente: string }) {
             <h1
               id="portada-titulo"
               data-zona-texto
-              className={`${claseFuente} w-fit text-[clamp(3.25rem,15.5vw,4.75rem)] uppercase leading-[0.86] text-white sm:text-[clamp(4.75rem,9vw,8.25rem)]`}
+              className={`w-fit font-titulos text-[clamp(3.25rem,15.5vw,4.75rem)] font-extrabold tracking-[-0.01em] uppercase leading-[0.86] text-white sm:text-[clamp(4.75rem,9vw,8.25rem)]`}
             >
               {TITULAR.map((frase) => (
                 <span key={frase} className="block">

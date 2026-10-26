@@ -13,7 +13,7 @@ const LEGALES = [
 const ENLACE = 'underline-offset-4 transition-colors duration-150 hover:text-tinta hover:underline';
 
 interface PieProps {
-  /** Sin cabecera (/v1, /v2), "Contacto" va aquí. */
+  /** En la portada (sin cabecera), "Contacto" va aquí. */
   conContacto?: boolean;
 }
 
