@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { DATOS_EMPRESA } from '@/lib/marca';
+import { DATOS_EMPRESA, URL_CONTACTO } from '@/lib/marca';
 
 import { AnoActual } from './AnoActual';
 
@@ -12,7 +12,13 @@ const LEGALES = [
 
 const ENLACE = 'underline-offset-4 transition-colors duration-150 hover:text-marino hover:underline';
 
-export function Pie() {
+interface PieProps {
+  /** Sin cabecera (/v1, /v2), "Contacto" va aquí. */
+  conContacto?: boolean;
+}
+
+export function Pie({ conContacto = false }: PieProps) {
+  const contactoExterno = URL_CONTACTO.startsWith('http');
   return (
     <footer className="px-5 sm:px-8 lg:px-16">
       <div className="mx-auto grid max-w-[90rem] gap-8 border-t border-linea py-12 text-detalle text-tinta-tenue lg:grid-cols-12 lg:py-16">
@@ -22,6 +28,17 @@ export function Pie() {
           <p>{DATOS_EMPRESA.direccionCorta}</p>
         </address>
         <div className="lg:col-span-4">
+          {conContacto && (
+            <p className="mb-2">
+              <a
+                href={URL_CONTACTO}
+                className="font-medium text-marino underline decoration-gris-azulado underline-offset-4 transition-colors duration-150 hover:decoration-marino"
+                {...(contactoExterno && { target: '_blank', rel: 'noopener noreferrer' })}
+              >
+                Contacto
+              </a>
+            </p>
+          )}
           <p>
             <a href={`mailto:${DATOS_EMPRESA.email}`} className={ENLACE}>
               {DATOS_EMPRESA.email}

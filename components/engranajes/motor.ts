@@ -8,8 +8,8 @@
 // Física: cada esfera va hacia su sitio con un muelle; mientras están
 // desordenadas, además, se apartan entre ellas.
 
-import { ARRIBA, DEPARTAMENTOS, DERECHA, getGeometria, type Geometria, type Vec3 } from './geometria';
-import { crearRender, POR_ESFERA } from './render';
+import { DEPARTAMENTOS, ENCUADRE_PORTADA, getGeometria, type Encuadre, type Geometria, type Vec3 } from './geometria';
+import { crearRender, MATERIAL_SIMBOLO, POR_ESFERA } from './render';
 
 export interface PosicionDepartamento {
   centro: Vec3;
@@ -25,6 +25,13 @@ export interface OpcionesEscena {
   onOrden?: (ordenada: boolean) => void;
   /** En cada fotograma, dónde están los departamentos (para colocar sus nombres). */
   onFotograma?: (geo: Geometria, departamentos: PosicionDepartamento[]) => void;
+  encuadre?: Encuadre;
+  /** Fondo marino (/v2). */
+  oscuro?: boolean;
+  /** El símbolo dD, en relieve sobre la esfera central. */
+  simbolo?: HTMLImageElement | null;
+  /** En desorden, cada departamento por su lado (sus nombres siempre visibles no se montan). */
+  repartir?: boolean;
 }
 
 export interface Escena {
@@ -75,15 +82,21 @@ function crearAleatorio(semilla: number) {
 const mezclar = (a: number, b: number, t: number) => a + (b - a) * t;
 const suavizar = (t: number) => t * t * (3 - 2 * t);
 
-function crearEsferas(piezas: number, geo: Geometria): Esfera[] {
+function crearEsferas(piezas: number, geo: Geometria, conSimbolo: boolean, repartir: boolean): Esfera[] {
   const azar = crearAleatorio(360);
   const casa = (): Vec3 => [
     mezclar(-geo.mitadAncho * 0.85, geo.mitadAncho * 0.85, azar()),
     mezclar(-geo.mitadAlto * 0.35, geo.mitadAlto * 0.55, azar()),
     mezclar(-geo.radioAnillo, geo.radioAnillo * 0.9, azar()),
   ];
+  // Desordenados, pero cada departamento en su sexto del círculo, a distinta distancia y altura.
+  const casaRepartida = (indice: number): Vec3 => {
+    const angulo = ((indice + 0.5) * 2 * Math.PI) / DEPARTAMENTOS.length + mezclar(-0.2, 0.2, azar());
+    const radio = geo.radioAnillo * mezclar(0.85, 1.05, azar());
+    return [radio * Math.sin(angulo), geo.radioAnillo * mezclar(-0.15, 0.35, azar()), radio * Math.cos(angulo)];
+  };
   const base = (tipo: Tipo, indice: number, color: Color, material: number, retraso: number): Esfera => {
-    const p = tipo === 'centro' ? ([0, 0, 0] as Vec3) : casa();
+    const p = tipo === 'centro' ? ([0, 0, 0] as Vec3) : repartir && tipo === 'departamento' ? casaRepartida(indice) : casa();
     return {
       tipo,
       indice,
@@ -98,7 +111,7 @@ function crearEsferas(piezas: number, geo: Geometria): Esfera[] {
       retraso,
     };
   };
-  const esferas = [base('centro', 0, MARINO, 0, 0)];
+  const esferas = [base('centro', 0, MARINO, conSimbolo ? MATERIAL_SIMBOLO : 0, 0)];
   // Los departamentos encajan uno tras otro; después, las piezas.
   DEPARTAMENTOS.forEach((_, i) => esferas.push(base('departamento', i, CELESTE, 0, 0.3 + i * 0.25)));
   for (let j = 0; j < piezas; j++) {
@@ -109,10 +122,13 @@ function crearEsferas(piezas: number, geo: Geometria): Esfera[] {
   return esferas;
 }
 
-export function crearEscena(canvas: HTMLCanvasElement, { piezas, dpr, onOrden, onFotograma }: OpcionesEscena): Escena {
-  let geo = getGeometria(canvas.clientWidth || 1, canvas.clientHeight || 1);
-  const esferas = crearEsferas(piezas, geo);
-  const render = crearRender(canvas, dpr, esferas.length);
+export function crearEscena(
+  canvas: HTMLCanvasElement,
+  { piezas, dpr, onOrden, onFotograma, encuadre = ENCUADRE_PORTADA, oscuro = false, simbolo = null, repartir = false }: OpcionesEscena,
+): Escena {
+  let geo = getGeometria(canvas.clientWidth || 1, canvas.clientHeight || 1, encuadre);
+  const esferas = crearEsferas(piezas, geo, Boolean(simbolo), repartir);
+  const render = crearRender(canvas, dpr, esferas.length, { oscuro, simbolo });
   const datos = new Float32Array(esferas.length * POR_ESFERA);
   const puntero = { x: 0, y: 0, activo: false };
 
@@ -130,7 +146,7 @@ export function crearEscena(canvas: HTMLCanvasElement, { piezas, dpr, onOrden, o
     if (!ancho || !alto) return;
     render.redimensionar(ancho, alto);
     const anterior = geo;
-    geo = getGeometria(ancho, alto);
+    geo = getGeometria(ancho, alto, encuadre);
     for (const e of esferas) {
       e.casa[0] *= geo.mitadAncho / anterior.mitadAncho;
       e.casa[1] *= geo.mitadAlto / anterior.mitadAlto;
@@ -192,7 +208,7 @@ export function crearEscena(canvas: HTMLCanvasElement, { piezas, dpr, onOrden, o
         const r = Math.min(130, geo.ancho * 0.22);
         if (d < r && d > 0.5) {
           const fuerza = mezclar(26, 7, t) * (1 - d / r) ** 2;
-          for (let j = 0; j < 3; j++) f[j] += (DERECHA[j] * dx - ARRIBA[j] * dy) * (fuerza / d);
+          for (let j = 0; j < 3; j++) f[j] += (geo.derecha[j] * dx - geo.arriba[j] * dy) * (fuerza / d);
         }
       }
       for (let j = 0; j < 3; j++) {

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { EnlaceBoton } from '@/components/Boton';
+import { URL_CONTACTO } from '@/lib/marca';
 
 import { BOTON_TEST, DOLORES, ENTREGABLES, GANAS, METODO, PASOS, PREGUNTAS } from './contenido';
 
@@ -188,7 +189,8 @@ export function SeccionPreguntas() {
   );
 }
 
-export function SeccionFinal() {
+/** Sin cabecera (/v1, /v2), "Contacto" va también aquí, junto al botón. */
+export function SeccionFinal({ conContacto = false }: { conContacto?: boolean }) {
   return (
     <section aria-labelledby="final-titulo" className={MARGENES}>
       <div className={`${CONTENEDOR} border-t border-linea py-20 lg:py-32`}>
@@ -196,8 +198,13 @@ export function SeccionFinal() {
           ¿Cuánto tiempo está perdiendo tu empresa?
         </h2>
         <p className="mt-4 text-tinta-suave">Descúbrelo en 3 minutos.</p>
-        <div className="mt-8">
+        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
           <BotonTest />
+          {conContacto && (
+            <EnlaceBoton href={URL_CONTACTO} variante="texto">
+              Contacto
+            </EnlaceBoton>
+          )}
         </div>
       </div>
     </section>
