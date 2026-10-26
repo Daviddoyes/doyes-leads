@@ -314,20 +314,46 @@ void main() {
 
 // ---------- Programa ----------
 
-function compilar(gl: WebGL2RenderingContext, tipo: number, fuente: string) {
-  const s = gl.createShader(tipo)!;
-  gl.shaderSource(s, fuente);
-  gl.compileShader(s);
-  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) ?? 'sombreador');
-  return s;
+// Compilar y enlazar sin preguntar el resultado: preguntar obliga a esperar al
+// driver. Así los ocho programas se compilan a la vez y, con
+// KHR_parallel_shader_compile, sin bloquear la página mientras tanto.
+
+interface ProgramaPendiente {
+  p: WebGLProgram;
+  sombreadores: WebGLShader[];
 }
 
-function programa(gl: WebGL2RenderingContext, vertices: string, fragmentos: string) {
+function empezarPrograma(gl: WebGL2RenderingContext, vertices: string, fragmentos: string): ProgramaPendiente {
   const p = gl.createProgram()!;
-  gl.attachShader(p, compilar(gl, gl.VERTEX_SHADER, vertices));
-  gl.attachShader(p, compilar(gl, gl.FRAGMENT_SHADER, fragmentos));
+  const sombreadores = [
+    [gl.VERTEX_SHADER, vertices],
+    [gl.FRAGMENT_SHADER, fragmentos],
+  ].map(([tipo, fuente]) => {
+    const s = gl.createShader(tipo as number)!;
+    gl.shaderSource(s, fuente as string);
+    gl.compileShader(s);
+    gl.attachShader(p, s);
+    return s;
+  });
   gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) ?? 'programa');
+  return { p, sombreadores };
+}
+
+const COMPLETION_STATUS_KHR = 0x91b1;
+
+async function esperarCompilacion(gl: WebGL2RenderingContext, pendientes: ProgramaPendiente[]) {
+  if (!gl.getExtension('KHR_parallel_shader_compile')) return;
+  while (!pendientes.every(({ p }) => gl.getProgramParameter(p, COMPLETION_STATUS_KHR))) {
+    if (gl.isContextLost()) throw new Error('Contexto WebGL perdido');
+    await new Promise((listo) => setTimeout(listo, 16));
+  }
+}
+
+function terminarPrograma(gl: WebGL2RenderingContext, { p, sombreadores }: ProgramaPendiente) {
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+    const fallos = sombreadores.map((s) => gl.getShaderInfoLog(s)).filter(Boolean);
+    throw new Error(fallos.join(' ') || gl.getProgramInfoLog(p) || 'programa');
+  }
   const uniformes = new Map<string, WebGLUniformLocation | null>();
   const u = (nombre: string) => {
     if (!uniformes.has(nombre)) uniformes.set(nombre, gl.getUniformLocation(p, nombre));
@@ -373,20 +399,24 @@ export interface Render {
   destruir: () => void;
 }
 
-export function crearRender(canvas: HTMLCanvasElement, opciones: OpcionesRender): Render {
+export async function crearRender(canvas: HTMLCanvasElement, opciones: OpcionesRender): Promise<Render> {
   const gl = canvas.getContext('webgl2', { alpha: false, antialias: false, depth: true, powerPreference: 'high-performance', premultipliedAlpha: false });
   if (!gl) throw new Error('Sin WebGL2');
   // Con más rango, las luces pueden pasar de blanco antes del bloom.
   const conRango = Boolean(gl.getExtension('EXT_color_buffer_float'));
 
-  const fondo = programa(gl, VERTICES_PANTALLA, FRAGMENTOS_FONDO);
-  const esfera = programa(gl, VERTICES_ESFERA, FRAGMENTOS_ESFERA);
-  const cinta = programa(gl, VERTICES_CINTA, FRAGMENTOS_CINTA);
-  const particula = programa(gl, VERTICES_PARTICULA, FRAGMENTOS_PARTICULA);
-  const brillo = programa(gl, VERTICES_PANTALLA, FRAGMENTOS_BRILLO);
-  const reducir = programa(gl, VERTICES_PANTALLA, FRAGMENTOS_REDUCIR);
-  const ampliar = programa(gl, VERTICES_PANTALLA, FRAGMENTOS_AMPLIAR);
-  const componer = programa(gl, VERTICES_PANTALLA, FRAGMENTOS_COMPONER);
+  const pendientes = [
+    [VERTICES_PANTALLA, FRAGMENTOS_FONDO],
+    [VERTICES_ESFERA, FRAGMENTOS_ESFERA],
+    [VERTICES_CINTA, FRAGMENTOS_CINTA],
+    [VERTICES_PARTICULA, FRAGMENTOS_PARTICULA],
+    [VERTICES_PANTALLA, FRAGMENTOS_BRILLO],
+    [VERTICES_PANTALLA, FRAGMENTOS_REDUCIR],
+    [VERTICES_PANTALLA, FRAGMENTOS_AMPLIAR],
+    [VERTICES_PANTALLA, FRAGMENTOS_COMPONER],
+  ].map(([vertices, fragmentos]) => empezarPrograma(gl, vertices, fragmentos));
+  await esperarCompilacion(gl, pendientes);
+  const [fondo, esfera, cinta, particula, brillo, reducir, ampliar, componer] = pendientes.map((p) => terminarPrograma(gl, p));
 
   // ---------- Geometría ----------
   const vaoVacio = gl.createVertexArray()!;
@@ -481,7 +511,7 @@ export function crearRender(canvas: HTMLCanvasElement, opciones: OpcionesRender)
     cadena = [];
   }
 
-  function pasada(p: ReturnType<typeof programa>, destino: Destino | null, origen: Destino | null, extra?: () => void) {
+  function pasada(p: ReturnType<typeof terminarPrograma>, destino: Destino | null, origen: Destino | null, extra?: () => void) {
     gl!.bindFramebuffer(gl!.FRAMEBUFFER, destino?.fb ?? null);
     gl!.viewport(0, 0, destino?.ancho ?? canvas.width, destino?.alto ?? canvas.height);
     gl!.useProgram(p.p);

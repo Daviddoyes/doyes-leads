@@ -7,10 +7,11 @@ import simboloPng from '@/public/marca/simbolo.png';
 import type { Escena, PosicionNombre } from './motor';
 
 /*
- * Fondo de la primera pantalla de la portada. El degradado de CSS está desde el primer
- * momento; la escena 3D (motor.ts) se descarga cuando el navegador queda libre y
- * aparece encima con un fundido. Con "reducir movimiento", un solo fotograma de
- * la escena ya ordenada. Sin WebGL2, el dibujo fijo de abajo.
+ * Fondo de la primera pantalla de la portada. El degradado de CSS y el texto están
+ * desde el primer momento; la escena 3D (motor.ts) se descarga cuando la página ya
+ * ha cargado y el navegador queda libre, y aparece encima con un fundido. Con
+ * "reducir movimiento", un solo fotograma de la escena ya ordenada. Sin WebGL2,
+ * el dibujo fijo de abajo.
  */
 
 const DEPARTAMENTOS = ['Marketing', 'Ventas', 'Compras', 'Operaciones', 'Calidad', 'Administración'];
@@ -20,25 +21,45 @@ export const FONDO_NOCHE = 'radial-gradient(ellipse 75% 65% at 50% 38%, #00103f 
 
 type Modo = 'esperando' | 'viva' | 'sin-webgl';
 
+/** Navegadores dentro de otras apps (Instagram, Facebook, TikTok...): arrancan en frío y con menos recursos. */
+const NAVEGADOR_INTERNO = /Instagram|FBAN|FBAV|FB_IAB|musical_ly|TikTok|Line\//i;
+
 function getEquipo() {
   const movil = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
   const nav = navigator as Navigator & { deviceMemory?: number };
   const modesto = (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
+  const interno = NAVEGADOR_INTERNO.test(navigator.userAgent);
   return {
     movil,
     // En equipos modestos, menos partículas, menos resolución y sin bloom.
     bloom: !modesto,
     particulas: modesto ? 90 : movil ? 260 : 520,
-    dpr: modesto ? 1 : Math.min(window.devicePixelRatio || 1, 1.5),
+    dpr: modesto ? 1 : Math.min(window.devicePixelRatio || 1, interno ? 1.25 : 1.5),
+    // Margen tras la carga para que la primera pantalla y el primer toque no compitan con la escena.
+    espera: modesto || interno ? 900 : 150,
   };
 }
 
-function tieneWebGL2(): boolean {
-  try {
-    return Boolean(document.createElement('canvas').getContext('webgl2'));
-  } catch {
-    return false;
-  }
+/**
+ * Llama a `listo` cuando la página ha terminado de cargar, ha pasado `espera`
+ * y el navegador está libre (como mucho 2 s más tarde). Devuelve cómo cancelarlo.
+ */
+function cuandoEsteLibre(listo: () => void, espera: number): () => void {
+  let temporizador = 0;
+  let ocioso = 0;
+  const programar = () => {
+    temporizador = window.setTimeout(() => {
+      if (window.requestIdleCallback) ocioso = window.requestIdleCallback(listo, { timeout: 2000 });
+      else listo();
+    }, espera);
+  };
+  if (document.readyState === 'complete') programar();
+  else window.addEventListener('load', programar, { once: true });
+  return () => {
+    window.removeEventListener('load', programar);
+    window.clearTimeout(temporizador);
+    if (ocioso) window.cancelIdleCallback?.(ocioso);
+  };
 }
 
 async function cargarSimbolo(): Promise<HTMLImageElement | null> {
@@ -95,10 +116,6 @@ export function EscenaOrbita() {
   const [modo, setModo] = useState<Modo>('esperando');
 
   useEffect(() => {
-    if (!tieneWebGL2()) {
-      setModo('sin-webgl');
-      return;
-    }
     const fija = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const equipo = getEquipo();
     let cancelado = false;
@@ -135,31 +152,47 @@ export function EscenaOrbita() {
         });
     };
 
+    // En vertical, la escena se centra en el hueco que deja el texto por encima.
+    const centroVertical = () => {
+      const alto = contenedor?.clientHeight || window.innerHeight;
+      const piezas = Array.from(document.querySelectorAll('[data-zona-texto]'));
+      const arriba = Math.min(...piezas.map((pieza) => pieza.getBoundingClientRect().top));
+      const origen = contenedor?.getBoundingClientRect().top ?? 0;
+      const hueco = Number.isFinite(arriba) ? arriba - origen : alto * 0.6;
+      return Math.min(Math.max(hueco / 2 / alto, 0.2), 0.4);
+    };
+
     async function cargar() {
       try {
         const [{ crearEscena }, simbolo] = await Promise.all([import('./motor'), cargarSimbolo()]);
         if (cancelado || !canvasRef.current) return;
-        escena = crearEscena(canvasRef.current, {
+        // Sin WebGL2, crearEscena falla y queda el dibujo fijo.
+        const nueva = await crearEscena(canvasRef.current, {
           dpr: equipo.dpr,
           bloom: equipo.bloom,
           particulas: equipo.particulas,
           simbolo,
           nombresPasajeros: equipo.movil,
           fija,
+          centroVertical,
           onNombres: colocarNombres,
         });
+        if (cancelado) {
+          nueva.destruir();
+          return;
+        }
+        escena = nueva;
         setModo('viva');
       } catch {
         if (!cancelado) setModo('sin-webgl');
       }
     }
 
-    // El texto ya está: la escena espera a que el navegador quede libre.
-    const programar = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 200));
-    const id = programar(() => void cargar());
+    // El texto ya está pintado: la escena no compite con él ni con la carga de la página.
+    const cancelarEspera = cuandoEsteLibre(() => void cargar(), equipo.espera);
     return () => {
       cancelado = true;
-      window.cancelIdleCallback?.(id as number);
+      cancelarEspera();
       escena?.destruir();
     };
   }, []);

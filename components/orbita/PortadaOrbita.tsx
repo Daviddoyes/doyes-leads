@@ -21,7 +21,11 @@ export function PortadaOrbita() {
           {/* Oscurece la parte de abajo para que el texto se lea siempre sobre la escena. */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[62%] bg-gradient-to-t from-[#01030d] via-[#01030d]/70 to-transparent" />
           {/* data-zona-texto: los nombres de la escena nunca se pintan encima de estas piezas. */}
-          <div className="flex flex-col items-center px-5 pb-10 text-center sm:px-8 sm:pb-12 lg:items-start lg:px-16 lg:pb-16 lg:text-left">
+          {/*
+            En vertical, el margen de abajo crece con la altura de la pantalla y la escena se centra
+            en el hueco de encima: arriba, entre escena y texto y abajo queda más o menos lo mismo.
+          */}
+          <div className="flex flex-col items-center px-5 pb-[max(2.5rem,calc(30svh-9.5rem))] text-center sm:px-8 lg:items-start lg:px-16 lg:pb-16 lg:text-left">
             <h1
               id="portada-titulo"
               data-zona-texto

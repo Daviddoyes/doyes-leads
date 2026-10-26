@@ -30,6 +30,8 @@ export interface OpcionesEscena {
   nombresPasajeros: boolean;
   /** Imagen fija de la escena ordenada ("reducir movimiento"): un solo fotograma. */
   fija: boolean;
+  /** En vertical, a qué altura va el centro de la escena (0 arriba, 1 abajo). */
+  centroVertical?: () => number;
   onNombres?: (nombres: PosicionNombre[]) => void;
 }
 
@@ -134,15 +136,16 @@ const aVista = (m: Mat4, p: Vec3): Vec3 => [
  * Encuadre según la pantalla: en móvil (vertical) la escena sube y las órbitas
  * llegan a los bordes; en escritorio, algo por encima del centro, a lo grande.
  */
-function getEncuadre(ancho: number, alto: number) {
+function getEncuadre(ancho: number, alto: number, centroVertical: number) {
   const aspecto = ancho / Math.max(alto, 1);
   const vertical = aspecto < 0.9;
   const t = Math.tan(CAMPO_VISION / 2);
-  // En móvil, las órbitas de fuera se salen un poco por los lados: más grande, como un plano de cine.
-  const ocupar = vertical ? 0.72 : 1.05;
+  // En móvil, las órbitas de fuera rozan los lados: grande, como un plano de cine, sin salirse del todo.
+  const ocupar = vertical ? 0.8 : 1.05;
   const distancia = Math.max(vertical ? 9 : 9.2, (ORBITAS[2].radio * ocupar) / (t * aspecto));
   // En apaisado, el texto va abajo a la izquierda: la escena sube y se aparta un poco a la derecha.
-  return { aspecto, distancia, subir: vertical ? 0.34 : 0.27, derecha: vertical ? 0 : 0.1 };
+  // En vertical, el centro va a la altura pedida (fracción desde arriba); subir va de -1 a 1.
+  return { aspecto, distancia, subir: vertical ? 1 - 2 * centroVertical : 0.27, derecha: vertical ? 0 : 0.1 };
 }
 
 // ---------- Escena ----------
@@ -155,7 +158,7 @@ interface Departamento {
   retraso: number;
 }
 
-export function crearEscena(canvas: HTMLCanvasElement, opciones: OpcionesEscena): Escena {
+export async function crearEscena(canvas: HTMLCanvasElement, opciones: OpcionesEscena): Promise<Escena> {
   const azar = crearAleatorio(2024);
   const departamentos: Departamento[] = DEPARTAMENTOS.map((_, i) => ({
     orbita: i % 3,
@@ -179,7 +182,7 @@ export function crearEscena(canvas: HTMLCanvasElement, opciones: OpcionesEscena)
     };
   });
 
-  const render: Render = crearRender(canvas, {
+  const render: Render = await crearRender(canvas, {
     dpr: opciones.dpr,
     bloom: opciones.bloom,
     simbolo: opciones.simbolo,
@@ -229,7 +232,7 @@ export function crearEscena(canvas: HTMLCanvasElement, opciones: OpcionesEscena)
     actual.x += (objetivo.x - actual.x) * k;
     actual.y += (objetivo.y - actual.y) * k;
 
-    const { aspecto, distancia, subir, derecha } = getEncuadre(ancho, alto);
+    const { aspecto, distancia, subir, derecha } = getEncuadre(ancho, alto, opciones.centroVertical?.() ?? 0.33);
     const ojo: Vec3 = [actual.x * 1.1, 2.1 - actual.y * 0.7, distancia];
     const vista = mirar(ojo, [0, 0, 0]);
     const proyeccion = perspectiva(aspecto, derecha, subir);
