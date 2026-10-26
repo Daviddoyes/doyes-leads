@@ -189,8 +189,8 @@ export default function Privacidad() {
           [
             'Derechos',
             <span key="derechos">
-              Puedes oponerte en cualquier momento respondiendo «no» a nuestro mensaje o escribiendo a{' '}
-              <a href="mailto:doyesdigital@gmail.com">doyesdigital@gmail.com</a>, y ejercer los derechos de acceso,
+              Puedes oponerte en cualquier momento respondiendo «no» a nuestro mensaje o escribiendo a {email}, y
+              ejercer los derechos de acceso,
               rectificación y supresión. También puedes reclamar ante la Agencia Española de Protección de Datos (
               <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">aepd.es</a>).
             </span>,
