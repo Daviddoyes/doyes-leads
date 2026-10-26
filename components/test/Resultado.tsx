@@ -3,7 +3,6 @@
 import { forwardRef, useEffect, useState } from 'react';
 
 import { EnlaceBoton } from '@/components/Boton';
-import { HablasConDavid } from '@/components/HablasConDavid';
 import { URL_RESERVA } from '@/lib/marca';
 import { TEXTO_RESERVA, type ColorTest, type ResultadoTest } from '@/lib/test-ia360';
 
@@ -43,10 +42,9 @@ function useAparicion(objetivo: number) {
 
 interface ResultadoProps {
   resultado: ResultadoTest;
-  conFoto: boolean;
 }
 
-export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function Resultado({ resultado, conFoto }, ref) {
+export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function Resultado({ resultado }, ref) {
   const { valor, lleno } = useAparicion(resultado.puntos);
   const colores = COLORES[resultado.color];
   // La agenda de la web manda; si no está configurada, la que indique el portal.
@@ -140,9 +138,6 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
             ) : (
               <p className="mt-6 font-medium text-marino">{resultado.llamada.texto}</p>
             )}
-            <div className="mt-8">
-              <HablasConDavid conFoto={conFoto} />
-            </div>
           </>
         ) : (
           <>

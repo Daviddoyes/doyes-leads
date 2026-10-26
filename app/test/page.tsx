@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 
 import { Cabecera } from '@/components/Cabecera';
 import { TestIA360 } from '@/components/test/TestIA360';
-import { hayFotoDavid } from '@/lib/foto-david';
 
 export const metadata: Metadata = {
   title: 'Test IA360',
@@ -30,7 +29,7 @@ export default function PaginaTest() {
     <>
       <Cabecera />
       <main className="flex flex-1 flex-col">
-        <TestIA360 conFoto={hayFotoDavid()} />
+        <TestIA360 />
       </main>
     </>
   );

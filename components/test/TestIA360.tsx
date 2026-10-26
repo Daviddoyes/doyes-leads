@@ -68,7 +68,7 @@ function getPasoPermitido(paso: number, respuestas: (number | null)[], abierta: 
   return Math.min(Math.max(paso, 0), PASO_CONTACTO);
 }
 
-export function TestIA360({ conFoto }: { conFoto: boolean }) {
+export function TestIA360() {
   const [paso, setPaso] = useState(0);
   const [direccion, setDireccion] = useState<Direccion>(null);
   const [saliendo, setSaliendo] = useState(false);
@@ -239,7 +239,7 @@ export function TestIA360({ conFoto }: { conFoto: boolean }) {
       </div>
 
       {resultado ? (
-        <Resultado ref={tituloRef} resultado={resultado} conFoto={conFoto} />
+        <Resultado ref={tituloRef} resultado={resultado} />
       ) : (
         <>
           <div className="mt-4 flex min-h-11 items-center">
